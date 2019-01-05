@@ -62,6 +62,7 @@
 ; SETUP HELM
 (require 'helm-projectile)
 (helm-projectile-on)
+(projectile-mode +1)
 (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
 (add-hook 'helm-after-initialize-hook
           (lambda()
