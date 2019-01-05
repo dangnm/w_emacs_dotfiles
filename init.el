@@ -55,6 +55,7 @@
   "tn" 'display-line-numbers-mode
   "bb" 'helm-mini
   "zc" 'toggle-selective-display
+  "ait" 'emacs-init-time
   "w" 'save-buffer)
 
 ;========================================================
@@ -71,6 +72,8 @@
   "SPC t" "toggles"
   "SPC b" "buffers"
   "SPC z" "zoom"
+  "SPC a" "applications"
+  "SPC ai" "System info"
   )
 
 ;========================================================
