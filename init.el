@@ -1,5 +1,8 @@
 (require 'package)
 
+;========================================================
+; SETUP PACKAGES
+;========================================================
 ; List the packages you want
 (setq package-list '(evil
                       evil-leader 
@@ -28,12 +31,16 @@
   (unless (package-installed-p package)
     (package-install package)))
 
+;========================================================
 ; SETUP EVIL
+;========================================================
 (setq evil-want-C-u-scroll t)
 (require 'evil)
 (evil-mode t)
 
+;========================================================
 ; SETUP EVIL LEADER
+;========================================================
 (require 'evil-leader)
 (global-evil-leader-mode)
 (evil-leader/set-leader "SPC")
@@ -44,9 +51,12 @@
   "saf" 'helm-do-ag
   "tn" 'display-line-numbers-mode
   "bb" 'helm-mini
+  "zc" 'toggle-selective-display
   "w" 'save-buffer)
 
+;========================================================
 ; SETUP WHICH KEY
+;========================================================
 (require 'which-key)
 (which-key-mode)
 (which-key-setup-side-window-bottom)
@@ -57,9 +67,12 @@
   "SPC p" "projects"
   "SPC t" "toggles"
   "SPC b" "buffers"
+  "SPC z" "zoom"
   )
 
+;========================================================
 ; SETUP HELM
+;========================================================
 (require 'helm-projectile)
 (helm-projectile-on)
 (projectile-mode +1)
@@ -69,25 +82,35 @@
             (define-key helm-map (kbd "C-j") 'helm-next-line)
             (define-key helm-map (kbd "C-k") 'helm-previous-line)))
 
+;========================================================
 ; SETUP THEME
+;========================================================
 (add-to-list 'load-path "~/w_emacs_dotfiles/themes")
 (add-to-list 'custom-theme-load-path "~/w_emacs_dotfiles/themes")
 ;(load-theme 'monokai t)
 (load-theme 'gruvbox-dark-medium t)
 
+;========================================================
 ; SETUP SPACELINE
+;========================================================
 (require 'spaceline-config)
 (spaceline-spacemacs-theme)
 
+;========================================================
 ; SETUP CLIPBOARD
+;========================================================
 (osx-clipboard-mode +1)
 
+;========================================================
 ; SETUP EDITOR
+;========================================================
 (menu-bar-mode -1) 
 (global-display-line-numbers-mode)
 
 
+;========================================================
 ; HELPERS
+;========================================================
 (defun s/show-buffer-file-name ()
   "Show the full path to the current file in the minibuffer."
   (interactive)
@@ -98,6 +121,17 @@
           (kill-new file-name))
       (error "Buffer not visiting a file"))))
 
+; Folding
+(defun toggle-selective-display (column)
+  (interactive "P")
+  (set-selective-display
+    (or column
+        (unless selective-display
+          (1+ (current-column))))))
+
+;========================================================
+; OTHER CONFIGS
+;========================================================
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
