@@ -3,6 +3,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package which-key
              :config
+             (run-with-timer 3 nil
+                             (lambda ()
+                               (message "Loading which-key configs...")))
              (require 'which-key)
              (which-key-mode)
              (which-key-setup-side-window-bottom)
@@ -16,6 +19,7 @@
                "SPC z" "zoom"
                "SPC a" "applications"
                "SPC ai" "System info"
+               "SPC g" "Git"
                )
              )
 

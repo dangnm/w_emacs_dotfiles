@@ -22,5 +22,6 @@
                "bb" 'helm-mini
                "zc" 'toggle-selective-display
                "ait" 'emacs-init-time
+               "gb" 'magit-blame
                "w" 'save-buffer)
              )

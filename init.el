@@ -13,6 +13,7 @@
                       spaceline ;Bottom statusline
                       neotree ;Tree explorer
                       find-file-in-project ;neotree project path support
+                      magit ;git tools
                       osx-clipboard
                       use-package
                       ))
@@ -57,6 +58,10 @@
 ;========================================================
 (load "my-helm-config")
 
+;========================================================
+; SETUP MAGIT
+;========================================================
+(load "my-magit-config")
 
 ;========================================================
 ; SETUP THEME

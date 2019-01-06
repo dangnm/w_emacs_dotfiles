@@ -2,7 +2,11 @@
 ;; Helm
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package helm-projectile
+             :commands (helm-mode helm-projectile-find-file)
              :config
+             (run-with-timer 3 nil
+                             (lambda ()
+                               (message "Loading helm configs...")))
              (require 'helm-projectile)
              (helm-projectile-on)
              (projectile-mode +1)
