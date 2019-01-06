@@ -2,7 +2,10 @@
 ;; Which key
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package which-key
+             :commands (which-key-configs-load)
              :config
+             (defun which-key-configs-load ()
+               t)
              (run-with-timer 3 nil
                              (lambda ()
                                (message "Loading which-key configs...")))
@@ -24,3 +27,4 @@
                )
              )
 
+(add-hook 'emacs-startup-hook 'which-key-configs-load)

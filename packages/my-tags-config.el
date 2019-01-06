@@ -1,0 +1,37 @@
+(defun visit-project-tags ()
+  (interactive)
+  (if (file-exists-p (concat (ffip-project-root) ".git/emacs_tags"))
+    (let ((tags-file (concat (ffip-project-root) ".git/emacs_tags")))
+      (visit-tags-table tags-file)
+      (message (concat "Loaded " tags-file))
+      )
+    )
+  )
+
+(defun build-ctags ()
+  (interactive)
+  (message "building project tags")
+  (let ((root (ffip-project-root)))
+    (shell-command (concat "ctags -e -R --extra=+fq -f " root ".git/emacs_tags " root)))
+  (visit-project-tags)
+  (message "tags built successfully"))
+
+(defun my-find-tag-and-load-config ()
+  (interactive)
+  (if (file-exists-p (concat (ffip-project-root) ".git/emacs_tags"))
+    (visit-project-tags)
+    (build-ctags))
+  (projectile-find-tag))
+
+(setq projectile-tags-command (concat "ctags -e -R --extra=+fq -f " (ffip-project-root) ".git/emacs_tags " (ffip-project-root)))
+
+(defun s/generate-ctags ()
+  (interactive)
+  (message "Loading helm configs...")
+  (let* ((async-shell-command-buffer 'new-buffer)
+         (display-buffer-alist '(("Async Shell Command" display-buffer-no-window))))
+    (async-shell-command (concat "ctags -e -R --extra=+fq -f " (ffip-project-root) ".git/emacs_tags " (ffip-project-root))))
+  )
+
+; (add-hook 'emacs-startup-hook 'visit-project-tags)
+
