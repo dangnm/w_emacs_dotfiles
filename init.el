@@ -14,6 +14,7 @@
                       neotree ;Tree explorer
                       find-file-in-project ;neotree project path support
                       magit ;git tools
+                      indent-guide ;indent guide
                       osx-clipboard
                       use-package
                       ))
@@ -81,6 +82,11 @@
 ; SETUP NEO TREE
 ;========================================================
 (load "my-neo-tree-config")
+
+;========================================================
+; SETUP INDENT GUIDE
+;========================================================
+(load "my-indent-guide-config")
 
 ;========================================================
 ; SETUP CLIPBOARD

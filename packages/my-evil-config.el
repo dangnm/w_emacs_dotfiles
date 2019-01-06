@@ -19,6 +19,7 @@
                "pf" 'helm-projectile-find-file
                "saf" 'helm-do-ag
                "tn" 'display-line-numbers-mode
+               "ti" 'indent-guide-toggle
                "bb" 'helm-mini
                "zc" 'toggle-selective-display
                "ait" 'emacs-init-time

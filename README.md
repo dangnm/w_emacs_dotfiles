@@ -44,5 +44,7 @@ Add this code to .zshenv and run emacs by typing "em"
   }
 ```
 
+## More plugins
+Check https://github.com/emacs-tw/awesome-emacs
 
 
