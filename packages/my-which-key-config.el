@@ -20,6 +20,7 @@
                "SPC a" "applications"
                "SPC ai" "System info"
                "SPC g" "Git"
+               "SPC e" "Errors"
                )
              )
 

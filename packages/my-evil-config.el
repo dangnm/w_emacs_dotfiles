@@ -20,9 +20,11 @@
                "saf" 'helm-do-ag
                "tn" 'display-line-numbers-mode
                "ti" 'indent-guide-toggle
+               "ts" 'flycheck-toggle
                "bb" 'helm-mini
                "zc" 'toggle-selective-display
                "ait" 'emacs-init-time
                "gb" 'magit-blame
+               "ef" 'force-run-flycheck
                "w" 'save-buffer)
              )

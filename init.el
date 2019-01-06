@@ -15,6 +15,7 @@
                       find-file-in-project ;neotree project path support
                       magit ;git tools
                       indent-guide ;indent guide
+                      flycheck ;syntax error checking
                       osx-clipboard
                       use-package
                       ))
@@ -63,6 +64,11 @@
 ; SETUP MAGIT
 ;========================================================
 (load "my-magit-config")
+
+;========================================================
+; SETUP FLYCHECK
+;========================================================
+(load "my-flycheck-config")
 
 ;========================================================
 ; SETUP THEME
