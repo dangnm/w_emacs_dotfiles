@@ -9,6 +9,7 @@
              :bind (("C-n" . ac-next)
                     ("C-p" . ac-previous))
              :config
+               (use-package auto-complete-config)
                (ac-set-trigger-key "TAB")
                (ac-config-default)
                (setq ac-delay 0.02)
