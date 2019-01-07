@@ -47,7 +47,6 @@
 ; SETUP EVIL
 ;========================================================
 (setq evil-want-C-u-scroll t)
-(bind-keys :prefix-map my-leader-map :prefix "SPC")
 (load "my-evil-config")
 
 ;========================================================
@@ -109,6 +108,22 @@
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 (setq scroll-step 1) ;; keyboard scroll one line at a time
+;; Indent
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(setq-default standard-indent 2)
+(setq-default js-indent-level 2)
+(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+;;Disable lock file
+;;Emacs automatically creates a temporary symlink in the same directory as the file being edited
+(setq create-lockfiles nil)
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+(custom-set-variables
+	'(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
+	'(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
+
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.emacs.d/autosaves/" t)
 
 ;========================================================
 ; HELPERS
