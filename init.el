@@ -16,6 +16,7 @@
                       magit ;git tools
                       indent-guide ;indent guide
                       flycheck ;syntax error checking
+                      auto-complete
                       osx-clipboard
                       use-package
                       ))
@@ -92,6 +93,11 @@
 ; SETUP INDENT GUIDE
 ;========================================================
 (load "my-indent-guide-config")
+
+;========================================================
+; SETUP AUTO COMPLETE
+;========================================================
+(load "my-auto-complete-config")
 
 ;========================================================
 ; SETUP CLIPBOARD
