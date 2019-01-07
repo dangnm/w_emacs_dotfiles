@@ -15,7 +15,8 @@
              (evil-leader/set-key
                ;File
                "ff" 'helm-find-files
-               "fy" 's/show-buffer-file-name
+               "fy" 's/show-buffer-file-path
+               "fY" 's/show-buffer-file-name
                "ft" 'neotree-project-dir-toggle
                ;Projects
                "pf" 'helm-projectile-find-file

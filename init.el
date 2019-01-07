@@ -134,10 +134,20 @@
 ;========================================================
 ; HELPERS
 ;========================================================
-(defun s/show-buffer-file-name ()
+(defun s/show-buffer-file-path ()
   "Show the full path to the current file in the minibuffer."
   (interactive)
   (let ((file-name (buffer-file-name)))
+    (if file-name
+        (progn
+          (message file-name)
+          (kill-new file-name))
+      (error "Buffer not visiting a file"))))
+
+(defun s/show-buffer-file-name ()
+  "Show the full path to the current file in the minibuffer."
+  (interactive)
+  (let ((file-name (file-name-nondirectory(buffer-file-name))))
     (if file-name
         (progn
           (message file-name)
