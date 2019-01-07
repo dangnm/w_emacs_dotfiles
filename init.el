@@ -17,6 +17,7 @@
                       indent-guide ;indent guide
                       flycheck ;syntax error checking
                       auto-complete
+                      evil-nerd-commenter ;comment code
                       osx-clipboard
                       use-package
                       ))

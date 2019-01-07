@@ -43,6 +43,13 @@
                "w" 'save-buffer)
              )
 
+;; evil-nerd-commenter
+(use-package evil-nerd-commenter
+             :init
+             (with-eval-after-load "evil"
+                                   (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
+                                   ))
+
 (defun find-my-tag ()
   (interactive)
   (if (not(fboundp 'my-find-tag-and-load-config))
