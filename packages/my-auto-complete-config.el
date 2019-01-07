@@ -20,6 +20,9 @@
                (setq ac-dwim  t)
                (setq ac-fuzzy-enable t)
                ;;Auto-completion complete key mapping
+               (with-eval-after-load "evil"
+                                     (define-key evil-insert-state-map (kbd "C-f") 'auto-complete)
+                                     )
                (add-hook 'company-mode-hook
                          (lambda()
                            (define-key company-active-map (kbd "C-f") 'company-complete-selection)))
