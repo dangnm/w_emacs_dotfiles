@@ -10,7 +10,6 @@
                     ("C-p" . ac-previous))
              :config
                (use-package auto-complete-config)
-               (ac-set-trigger-key "TAB")
                (ac-config-default)
                (setq ac-delay 0.02)
                (setq ac-use-menu-map t)
@@ -24,10 +23,9 @@
                      ac-auto-show-menu 0.8
                      ac-expand-on-auto-complete nil)
                ;;Auto-completion complete key mapping
+               (define-key ac-completing-map (kbd "C-l") 'ac-complete)
+               ;;Trigger auto complete menu
                (with-eval-after-load "evil"
                                      (define-key evil-insert-state-map (kbd "C-f") 'auto-complete)
                                      )
-               (add-hook 'company-mode-hook
-                         (lambda()
-                           (define-key company-active-map (kbd "C-f") 'company-complete-selection)))
              )

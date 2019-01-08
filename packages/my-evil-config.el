@@ -48,6 +48,7 @@
              :config
              (require 'evil)
              (evil-mode t)
+             (define-key evil-motion-state-map (kbd "C-u") 'evil-scroll-up)
              )
 
 ;; evil-nerd-commenter
