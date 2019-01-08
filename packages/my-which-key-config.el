@@ -14,6 +14,7 @@
              (which-key-setup-side-window-bottom)
              (which-key-add-key-based-replacements
                "SPC f" "files"
+               "SPC fe" "emacs"
                "SPC s" "search/symbol"
                "SPC sa" "ag"
                "SPC p" "projects"
@@ -23,6 +24,7 @@
                "SPC a" "applications"
                "SPC ai" "System info"
                "SPC g" "Git"
+               "SPC j" "Jump"
                "SPC e" "Errors"
                )
              )
