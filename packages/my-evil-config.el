@@ -34,6 +34,9 @@
                "ait" 'emacs-init-time
                ;Git
                "gb" 'magit-blame
+               "gm" 'magit-dispatch-popup
+               "gfh" 'magit-log-buffer-file
+               "gll" 'git-link
                ;Jump
                "jj" 'evil-avy-goto-char
                "jJ" 'evil-avy-goto-char-2
@@ -41,6 +44,10 @@
                "jw" 'evil-avy-goto-word-or-subword-1
                ;Error
                "ef" 'force-run-flycheck
+               "en" 'next-error
+               "eN" 'previous-error
+               "ep" 'previous-error
+               "ec" 'flycheck-clear
                "w" 'save-buffer)
              )
 

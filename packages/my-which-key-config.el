@@ -24,6 +24,8 @@
                "SPC a" "applications"
                "SPC ai" "System info"
                "SPC g" "Git"
+               "SPC gl" "links"
+               "SPC gf" "file"
                "SPC j" "Jump"
                "SPC e" "Errors"
                )
