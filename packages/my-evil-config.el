@@ -70,6 +70,7 @@
   )
 
 (defun find-my-tag ()
+  (interactive)
   (if (not(fboundp 'my-find-tag-and-load-config))
     (progn
       (load "my-tags-config")
