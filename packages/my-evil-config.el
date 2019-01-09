@@ -49,6 +49,12 @@
              (require 'evil)
              (evil-mode t)
              (define-key evil-motion-state-map (kbd "C-u") 'evil-scroll-up)
+             (use-package evil-surround
+                          :config
+                          (progn
+                            (global-evil-surround-mode 1)
+                            (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))
+                            (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))))
              )
 
 ;; evil-nerd-commenter

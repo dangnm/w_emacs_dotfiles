@@ -18,6 +18,7 @@
                       flycheck ;syntax error checking
                       auto-complete
                       evil-nerd-commenter ;comment code
+                      evil-surround ;surroundings: parentheses, brackets, quotes, XML tags, and more
                       osx-clipboard
                       use-package
                       ))
