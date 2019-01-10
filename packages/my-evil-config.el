@@ -49,6 +49,11 @@
                "eN" 'previous-error
                "ep" 'previous-error
                "ec" 'flycheck-clear
+               ;Text
+               "xU" 'upcase-region
+               "xu" 'downcase-region
+               "xs" 'toggle-camelcase-underscores
+               "xdw" 'delete-trailing-whitespace
                "w" 'save-buffer)
              )
 

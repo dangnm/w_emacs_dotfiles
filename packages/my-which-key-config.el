@@ -26,8 +26,10 @@
                "SPC g" "Git"
                "SPC gl" "links"
                "SPC gf" "file"
-               "SPC j" "Jump"
-               "SPC e" "Errors"
+               "SPC j" "jump"
+               "SPC e" "errors"
+               "SPC x" "text"
+               "SPC xd" "delete"
                )
              )
 
