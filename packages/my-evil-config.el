@@ -44,6 +44,7 @@
                "jw" 'evil-avy-goto-word-or-subword-1
                ;Error
                "ef" 'force-run-flycheck
+               "el" 'flycheck-list-errors
                "en" 'next-error
                "eN" 'previous-error
                "ep" 'previous-error
