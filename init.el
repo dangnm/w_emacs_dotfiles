@@ -180,6 +180,20 @@
             (downcase-region start (1+ start)))
         (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
         (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
+
+(defun toggle-camelcase-motion ()
+  (interactive)
+  (if (get 'camelcase-motion-toggle-flag 'state)
+    (progn
+      (message "Disabled camelcase motion")
+      (subword-mode'-1)
+      (put 'camelcase-motion-toggle-flag'state nil))
+    (progn
+      (message "Enabled camelcase motion")
+      (subword-mode)
+      (put 'camelcase-motion-toggle-flag 'state t))
+    )
+  )
 ;========================================================
 ; OTHER CONFIGS
 ;========================================================

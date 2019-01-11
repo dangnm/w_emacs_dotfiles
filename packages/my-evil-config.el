@@ -26,6 +26,7 @@
                "tn" 'display-line-numbers-mode
                "ti" 'indent-guide-toggle
                "ts" 'flycheck-toggle
+               "t C-c" 'toggle-camelcase-motion
                ;Buffer
                "bb" 'helm-mini
                ;Zoom(Folding)
