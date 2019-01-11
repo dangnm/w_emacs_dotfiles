@@ -135,6 +135,8 @@
 ;; support downcase upcase
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+;; hide toolbar in emacs GUI
+(tool-bar-mode -1) 
 
 ;========================================================
 ; HELPERS
