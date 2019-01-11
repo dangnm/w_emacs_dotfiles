@@ -20,6 +20,7 @@
                "pG" 'projectile-regenerate-tags
                "pD" 'projectile-dired
                "pr" 'projectile-recentf
+               "pI" 'projectile-invalidate-cache
                ;Search
                "saf" 'helm-do-ag
                ;Toggle
