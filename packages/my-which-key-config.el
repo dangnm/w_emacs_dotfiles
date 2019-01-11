@@ -10,6 +10,7 @@
                              (lambda ()
                                (message "Loading which-key configs...")))
              (require 'which-key)
+             (require 'tramp)
              (which-key-mode)
              (which-key-setup-side-window-bottom)
              (which-key-add-key-based-replacements
