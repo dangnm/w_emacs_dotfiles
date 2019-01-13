@@ -35,6 +35,9 @@
 
 ;; This is only needed once, near the top of the file
 (eval-when-compile
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
   (add-to-list 'load-path "~/w_emacs_dotfiles/packages")
   (require 'use-package))
