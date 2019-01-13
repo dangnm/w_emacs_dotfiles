@@ -2,7 +2,7 @@
 ;; Magit - GIT tools
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
-             :commands (magit-blame-mode)
+             :commands (magit-blame-mode magit-blame)
              :config
              (evil-make-overriding-map magit-blame-mode-map 'normal)
              (add-hook 'magit-blame-mode-hook 'evil-normalize-keymaps)

@@ -6,6 +6,7 @@
 ; List the packages you want
 (setq package-list '(evil
                       evil-leader 
+                      bind-map ;keymap available across different “leader keys”
                       which-key 
                       helm-ag
                       helm-projectile
@@ -14,12 +15,15 @@
                       neotree ;Tree explorer
                       find-file-in-project ;neotree project path support
                       magit ;git tools
+                      magit-popup ;git tools
+                      git-link ;copy github link
                       git-timemachine ;git tools
                       indent-guide ;indent guide
                       flycheck ;syntax error checking
                       auto-complete
                       evil-nerd-commenter ;comment code
                       evil-surround ;surroundings: parentheses, brackets, quotes, XML tags, and more
+                      avy ;jumping to visible text using a char-based decision tree
                       async ;asynchronous processing in Emacs
                       osx-clipboard
                       use-package
