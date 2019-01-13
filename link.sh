@@ -8,7 +8,7 @@ then
   unlink ~/.emacs.d/layers
   unlink ~/.emacs.d/private
   unlink ~/.emacs.d/spacemacs.mk
-  link ~/w_emacs_dotfiles/init.el ~/.emacs.d/init.el
+  ln -sf ~/w_emacs_dotfiles/init.el ~/.emacs.d/init.el
 else
   unlink ~/.emacs.d/init.el
   ln -sf ~/spacemacs/assets ~/.emacs.d/assets
