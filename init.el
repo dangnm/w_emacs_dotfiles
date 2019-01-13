@@ -19,6 +19,7 @@
                       auto-complete
                       evil-nerd-commenter ;comment code
                       evil-surround ;surroundings: parentheses, brackets, quotes, XML tags, and more
+                      async ;asynchronous processing in Emacs
                       osx-clipboard
                       use-package
                       ))
