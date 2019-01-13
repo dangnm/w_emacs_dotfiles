@@ -57,7 +57,7 @@
           (lambda()
             (async-start
               (lambda ()
-                (load-file "~/w_emacs_dotfiles/init.el")
+                (load-file "~/.emacs.d/init.el")
                 (require 'helm-projectile)
                 (load "my-helm-clear-projectile-cache-config")
                 (projectile-mode +1)
