@@ -14,6 +14,7 @@
                       neotree ;Tree explorer
                       find-file-in-project ;neotree project path support
                       magit ;git tools
+                      git-timemachine ;git tools
                       indent-guide ;indent guide
                       flycheck ;syntax error checking
                       auto-complete

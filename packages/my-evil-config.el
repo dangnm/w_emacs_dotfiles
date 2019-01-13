@@ -37,6 +37,7 @@
                ;Git
                "gb" 'magit-blame
                "gm" 'magit-dispatch-popup
+               "gt" 'git-timemachine
                "gfh" 'magit-log-buffer-file
                "gll" 'git-link
                ;Jump
