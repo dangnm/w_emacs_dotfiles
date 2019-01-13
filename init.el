@@ -37,13 +37,26 @@
 ; Activate all the packages (in particular autoloads)
 (package-initialize)
 
+;Init file paths
+(defun s/dotfiles-folder-path ()
+  (let ((path1 (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "readlink ~/.emacs.d 2>/dev/null")))
+        (path2 (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "dirname $(readlink ~/.emacs.d/init.el) 2>/dev/null"))))
+    (if (string= "" path1)
+      path2
+      path1
+      )
+    )
+  )
+(setq w-dotfiles-folder-path (s/dotfiles-folder-path))
+(setq evil-evilified-state-path (format "%s/packages/evil-evilified-state.el" w-dotfiles-folder-path))
+
 ;; This is only needed once, near the top of the file
 (eval-when-compile
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
   ;; Following line is not needed if use-package.el is in ~/.emacs.d
-  (add-to-list 'load-path "~/w_emacs_dotfiles/packages")
+  (add-to-list 'load-path (format "%s/packages" w-dotfiles-folder-path))
   (require 'use-package))
 
 ; Update your local package index
@@ -84,8 +97,8 @@
 ;========================================================
 ; SETUP THEME
 ;========================================================
-(add-to-list 'load-path "~/w_emacs_dotfiles/themes")
-(add-to-list 'custom-theme-load-path "~/w_emacs_dotfiles/themes")
+(add-to-list 'load-path (format "%s/themes" w-dotfiles-folder-path))
+(add-to-list 'custom-theme-load-path (format "%s/themes" w-dotfiles-folder-path))
 ;(load-theme 'monokai t)
 (load-theme 'gruvbox-dark-medium t)
 

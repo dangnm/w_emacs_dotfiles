@@ -40,7 +40,7 @@
     (progn
       (global-flycheck-mode)
       (use-package evil-evilified-state
-                   :load-path "~/w_emacs_dotfiles/packages/evil-evilified-state.el")
+                   :load-path evil-evilified-state-path)
 
       (evilified-state-evilify-map flycheck-error-list-mode-map
                                    :mode flycheck-error-list-mode
