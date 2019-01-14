@@ -25,6 +25,7 @@
                       evil-surround ;surroundings: parentheses, brackets, quotes, XML tags, and more
                       avy ;jumping to visible text using a char-based decision tree
                       async ;asynchronous processing in Emacs
+                      haml-mode ;Haml for ruby development
                       osx-clipboard
                       use-package
                       ))
