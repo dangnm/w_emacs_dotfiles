@@ -44,11 +44,10 @@
 
 ;Init file paths
 (defun s/dotfiles-folder-path ()
-  (let ((path1 (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "readlink ~/.emacs.d 2>/dev/null")))
-        (path2 (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "dirname $(readlink ~/.emacs.d/init.el) 2>/dev/null"))))
-    (if (string= "" path1)
-      path2
+  (let ((path1 (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "dirname $(readlink ~/.emacs.d/init.el) 2>/dev/null"))))
+    (if (not(string= "" path1))
       path1
+      (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "readlink ~/.emacs.d 2>/dev/null"))
       )
     )
   )
