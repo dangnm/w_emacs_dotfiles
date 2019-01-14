@@ -13,13 +13,13 @@
 
 ## Install dotfiles
     git clone git@github.com:dangnm/w_emacs_dotfiles.git
-## Setup Spacemacs
+## Setup Emacs dotfiles
     Run sh ~/w_emacs_dotfiles/link.sh to toggle
 
-## Restore default emacs (optional)
+## Restore default Emacs (optional)
     Run sh ~/w_emacs_dotfiles/link.sh to toggle
 
-## Run spacemacs in 0.1s
+## Run Emacs in 0.1s
 Add this code to .zshenv and run emacs by typing "em"
 
 ```
