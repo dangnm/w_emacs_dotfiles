@@ -3,6 +3,10 @@
 ;========================================================
 ; SETUP PACKAGES
 ;========================================================
+;; set the dir where all elpa packages go
+(setq relative-config-dir "~/.emacs.d/")
+(setq package-user-dir (concat relative-config-dir "welpa"))
+
 ; List the packages you want
 (setq package-list '(evil
                       evil-leader 
