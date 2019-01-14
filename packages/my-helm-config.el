@@ -2,7 +2,7 @@
 ;; Helm
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package helm-projectile
-             :commands (helm-mode helm-projectile-find-file)
+             :commands (helm-mode helm-projectile-find-file projectile-switch-project)
              :config
              (run-with-timer 3 nil
                              (lambda ()

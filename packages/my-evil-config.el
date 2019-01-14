@@ -21,6 +21,7 @@
                "pD" 'projectile-dired
                "pr" 'projectile-recentf
                "pI" 'projectile-invalidate-cache
+               "pp" 'projectile-switch-project
                ;Search
                "saf" 'helm-do-ag
                ;Toggle
