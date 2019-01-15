@@ -20,6 +20,7 @@
                "SPC sa" "ag"
                "SPC p" "projects"
                "SPC t" "toggles"
+               "SPC th" "highlight"
                "SPC b" "buffers"
                "SPC z" "zoom"
                "SPC a" "applications"

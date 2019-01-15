@@ -29,6 +29,7 @@
                "ti" 'indent-guide-toggle
                "ts" 'flycheck-toggle
                "t C-c" 'toggle-camelcase-motion
+               "thp" 'highlight-parentheses-mode
                ;Buffer
                "bb" 'helm-mini
                ;Zoom(Folding)

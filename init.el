@@ -20,6 +20,7 @@
                       find-file-in-project ;neotree project path support
                       magit ;git tools
                       magit-popup ;git tools
+                      git-gutter ;indicating inserted, modified or deleted lines
                       git-link ;copy github link
                       git-timemachine ;git tools
                       indent-guide ;indent guide
@@ -30,6 +31,7 @@
                       avy ;jumping to visible text using a char-based decision tree
                       async ;asynchronous processing in Emacs
                       haml-mode ;Haml for ruby development
+                      highlight-parentheses; UI: highlight
                       osx-clipboard
                       use-package
                       ))

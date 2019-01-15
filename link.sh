@@ -1,5 +1,7 @@
 #!/bin/sh
 #Backup default emacs file
+mkdir ~/.emacs.d 2>/dev/null
+ln -sf ~/w_emacs_dotfiles/init.el ~/.emacs.d/init.el
 if [ -d  ~/.emacs.d/assets ]
 then
   unlink ~/.emacs.d/assets

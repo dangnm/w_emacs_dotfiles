@@ -15,6 +15,8 @@
     git clone git@github.com:dangnm/w_emacs_dotfiles.git
 ## Setup Emacs dotfiles
     Run sh ~/w_emacs_dotfiles/link.sh to toggle
+    OR
+    ln -sf ~/w_emacs_dotfiles/init.el ~/.emacs.d/init.el
 
 ## Restore default Emacs (optional)
     Run sh ~/w_emacs_dotfiles/link.sh to toggle

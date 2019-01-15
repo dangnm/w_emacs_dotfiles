@@ -41,6 +41,17 @@
              (evil-define-key 'normal git-timemachine-mode-map (kbd "G") 'git-timemachine-go-to-revision-id)
              )
 
+(use-package git-gutter
+             :commands (global-git-gutter-mode git-gutter-mode)
+             :config
+             (progn
+               (set-face-background 'git-gutter:deleted "#990A1B")
+               (set-face-foreground 'git-gutter:modified "#00736F")
+               (set-face-foreground 'git-gutter:added "#546E00"))
+             )
+;Init git gutter when saving
+(add-hook 'after-save-hook 'git-gutter-mode)
+
 (eval-after-load 'git-timemachine
   '(progn
      (evil-make-overriding-map git-timemachine-mode-map 'normal)
