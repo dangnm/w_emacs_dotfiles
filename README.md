@@ -23,26 +23,29 @@
 
 ## Run Emacs in 0.1s
 Add this code to .zshenv and run emacs by typing "em"
-
 ```
   unalias em >/dev/null 2>&1
   em() {
-    if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 0 ]]; then
-        echo "daemon is running"
-        if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 1 ]]; then
-            kill -9 $(ps aux | grep 'emacs --daemon' | grep -v 'grep' | awk '{print $2}')
-            emacs --daemon
-        fi
-    else
-        echo "daemon is starting"
-        emacs --daemon
-    fi
-
-    if [[ "$@" == "" ]]; then
+      if [[ "$@" == "stop" ]]; then
+        ps -ef | grep 'emacs --daemon' | grep -v grep | awk '{print $2}' | xargs kill
+        return
+      fi
+      if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 0 ]]; then
+          echo "daemon is running"
+          if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 1 ]]; then
+              kill -9 $(ps aux | grep 'emacs --daemon' | grep -v 'grep' | awk '{print $2}')
+              emacs --daemon
+          fi
+      else
+          echo "daemon is starting"
+          emacs --daemon
+      fi
+  
+      if [[ "$@" == "" ]]; then
         emacsclient -create-frame --alternate-editor="" .
-    else
+      else
         emacsclient -create-frame --alternate-editor="" "$@"
-    fi
+      fi
   }
 ```
 
