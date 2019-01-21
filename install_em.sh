@@ -43,4 +43,7 @@ rm ~/.emacs.d/emacs_server.sh
 touch ~/.emacs.d/emacs_server.sh
 echo "$EMACSSERVERCODE" >> ~/.emacs.d/emacs_server.sh
 echo "source ~/.emacs.d/emacs_server.sh" >> ~/$file
-
+if [[ "$@" == "uninstall" ]]; then
+  rm ~/.emacs.d/emacs_server.sh 2>/dev/null
+  sed -i '' "/$regex/d" ~/$file
+fi
