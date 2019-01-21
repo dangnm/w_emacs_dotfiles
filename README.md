@@ -23,8 +23,8 @@
 
 ## Run Emacs in 0.1s
 ### Easy way
-Run chmod +x install_em.sh
-Run install_em.sh
+####Run chmod +x install_em.sh
+####Run install_em.sh
 ### Hard way
 Add this code to .zshenv and run emacs by typing "em"
 ```
