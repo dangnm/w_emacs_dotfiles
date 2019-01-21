@@ -22,6 +22,10 @@
     Run sh ~/w_emacs_dotfiles/link.sh to toggle
 
 ## Run Emacs in 0.1s
+### Easy way
+Run chmod +x install_em.sh
+Run install_em.sh
+### Hard way
 Add this code to .zshenv and run emacs by typing "em"
 ```
   unalias em >/dev/null 2>&1
