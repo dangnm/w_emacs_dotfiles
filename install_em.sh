@@ -3,7 +3,7 @@ read -r -d '' EMACSSERVERCODE << "EOM"
 unalias em >/dev/null 2>&1
 em() {
     if [[ "$@" == "stop" ]]; then
-      ps -ef | grep 'emacs --daemon' | grep -v grep | awk '{print $2}' | xargs kill
+      kill -9 $(ps -ef | grep 'emacs --daemon' | grep -v grep | awk '{print $2}')
       return
     fi
     if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 0 ]]; then
