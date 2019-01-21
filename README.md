@@ -52,6 +52,10 @@ Add this code to .zshenv and run emacs by typing "em"
       fi
   }
 ```
+### Run emacs & start server (if server has not been started)
+Type em
+### Stop server
+em stop
 
 ## More plugins
 Check https://github.com/emacs-tw/awesome-emacs
