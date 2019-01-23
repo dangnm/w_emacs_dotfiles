@@ -32,7 +32,9 @@
                       async ;asynchronous processing in Emacs
                       haml-mode ;Haml for ruby development
                       highlight-parentheses; UI: highlight
+                      persp-mode ;perspectives for emacs, save/recover sessions
                       osx-clipboard
+                      org
                       use-package
                       ))
 
@@ -101,6 +103,11 @@
 (load "my-flycheck-config")
 
 ;========================================================
+; SETUP PERSP MODE - save/recover sessions
+;========================================================
+(load "my-persp-mode-config")
+
+;========================================================
 ; SETUP THEME
 ;========================================================
 (add-to-list 'load-path (format "%s/themes" w-dotfiles-folder-path))
@@ -128,6 +135,11 @@
 ; SETUP AUTO COMPLETE
 ;========================================================
 (load "my-auto-complete-config")
+
+;========================================================
+; SETUP ORG MODE
+;========================================================
+(load "my-org-mode-config")
 
 ;========================================================
 ; SETUP CLIPBOARD

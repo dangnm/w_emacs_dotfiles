@@ -32,6 +32,7 @@
                "SPC e" "errors"
                "SPC x" "text"
                "SPC xd" "delete"
+               "SPC l" "layouts"
                )
              )
 

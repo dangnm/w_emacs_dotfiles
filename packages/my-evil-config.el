@@ -24,6 +24,7 @@
                "pp" 'projectile-switch-project
                ;Search
                "saf" 'helm-do-ag
+               "sp" 'helm-ag
                ;Toggle
                "tn" 'display-line-numbers-mode
                "ti" 'indent-guide-toggle
@@ -54,6 +55,9 @@
                "eN" 'previous-error
                "ep" 'previous-error
                "ec" 'flycheck-clear
+               ;Layouts
+               "lL" 'persp-load-state-from-file
+               "ls" 'persp-save-state-to-file
                ;Text
                "xU" 'upcase-region
                "xu" 'downcase-region
