@@ -24,7 +24,9 @@
                "pp" 'projectile-switch-project
                ;Search
                "saf" 'helm-do-ag
-               "sp" 'helm-ag
+               "saa" 'helm-do-ag-this-file
+               "sf" 'helm-do-ag
+               "sp" 'helm-do-ag-project-root
                ;Toggle
                "tn" 'display-line-numbers-mode
                "ti" 'indent-guide-toggle
