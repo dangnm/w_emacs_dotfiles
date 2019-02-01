@@ -5,8 +5,8 @@
     $ brew install emacs --HEAD --use-git-head --cocoa --srgb
     # To get Emacs into Application folder 
     $ brew linkapps
-    # Update alias to make homebrew emacs default emacs by adding the following line to .bash_profile
-    alias emacs="/usr/local/Cellar/emacs/HEAD/bin/emacs -nw --insecure"
+    # Update alias to make homebrew emacs default emacs by adding the following line to .bash_profile or .zshenv
+    alias emacs="/usr/local/Cellar/emacs/HEAD/bin/emacs -nw"
 
 ## Install ag search
     brew install ag
@@ -28,29 +28,29 @@ To uninstall the script: install_em.sh uninstall
 ### Hard way
 Add this code to .zshenv and run emacs by typing "em"
 ```
-  unalias em >/dev/null 2>&1
-  em() {
-      if [[ "$@" == "stop" ]]; then
-        ps -ef | grep 'emacs --daemon' | grep -v grep | awk '{print $2}' | xargs kill
-        return
-      fi
-      if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 0 ]]; then
-          echo "daemon is running"
-          if [[ $(ps aux | grep -w "emacs --daemon" | grep -v grep | wc -l) -gt 1 ]]; then
-              kill -9 $(ps aux | grep 'emacs --daemon' | grep -v 'grep' | awk '{print $2}')
-              emacs --daemon
-          fi
-      else
-          echo "daemon is starting"
-          emacs --daemon
-      fi
-  
-      if [[ "$@" == "" ]]; then
-        emacsclient -create-frame --alternate-editor="" .
-      else
-        emacsclient -create-frame --alternate-editor="" "$@"
-      fi
-  }
+unalias em >/dev/null 2>&1
+em() {
+    if [[ "$@" == "stop" ]]; then
+      kill -9 $(ps -ef | grep '.*emacs.*daemon.*' | grep -v grep | awk '{print $2}')
+      return
+    fi
+    if [[ $(ps aux | grep -w ".*emacs.*daemon.*" | grep -v grep | wc -l) -gt 0 ]]; then
+        echo "daemon is running"
+        if [[ $(ps aux | grep -w ".*emacs.*daemon.*" | grep -v grep | wc -l) -gt 1 ]]; then
+            kill -9 $(ps aux | grep '.*emacs.*daemon.*' | grep -v 'grep' | awk '{print $2}')
+            emacs --daemon
+        fi
+    else
+        echo "daemon is starting"
+        emacs --daemon
+    fi
+
+    if [[ "$@" == "" ]]; then
+      emacsclient -create-frame --alternate-editor="" .
+    else
+      emacsclient -create-frame --alternate-editor="" "$@"
+    fi
+}
 ```
 ### Run emacs & start server (if server has not been started)
 Type em
