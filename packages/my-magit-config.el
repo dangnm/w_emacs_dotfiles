@@ -8,6 +8,9 @@
              (add-hook 'magit-blame-mode-hook 'evil-normalize-keymaps)
              (evil-define-key 'normal magit-blame-mode-map (kbd "q") 'magit-blame-quit)
 
+             (require 'evil-magit)
+             ;Full screen git status
+             (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
              (define-key magit-mode-map "\C-j" 'magit-section-forward)
              (define-key magit-mode-map "\C-k" 'magit-section-backward)
              (define-key magit-mode-map "\M-j" 'magit-section-forward-sibling)

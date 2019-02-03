@@ -43,7 +43,9 @@
                "gb" 'magit-blame
                "gm" 'magit-dispatch-popup
                "gt" 'git-timemachine
+               "gs" 'magit-status
                "gfh" 'magit-log-buffer-file
+               "gfb" 'magit-log-all-branches
                "gll" 'git-link
                ;Jump
                "jj" 'evil-avy-goto-char
