@@ -14,6 +14,8 @@
                "fY" 's/show-buffer-file-name
                "ft" 'neotree-project-dir-toggle
                "fes" 'sync-config
+               "fw" 'save-buffer
+               "fx" 'evil-quit
                ;Projects
                "pf" 'helm-projectile-find-file
                "pg" 'find-my-tag
@@ -62,12 +64,22 @@
                ;Layouts
                "lL" 'persp-load-state-from-file
                "ls" 'persp-save-state-to-file
+               ;Windows
+               "w/" 'split-window-right
+               "w-" 'split-window-below
+               "wv" 'split-window-right
+               "ws" 'split-window-below
+               "wd" 'delete-window
+               "wm" 'toggle-maximize-buffer
+               "wj" 'evil-window-down
+               "wk" 'evil-window-up
+               "wh" 'evil-window-left
+               "wl" 'evil-window-right
                ;Text
                "xU" 'upcase-region
                "xu" 'downcase-region
                "xs" 'toggle-camelcase-underscores
-               "xdw" 'delete-trailing-whitespace
-               "w" 'save-buffer)
+               "xdw" 'delete-trailing-whitespace)
              )
 
 (use-package evil
@@ -89,6 +101,17 @@
              (with-eval-after-load "evil"
                                    (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
                                    ))
+
+;; from https://gist.github.com/3402786
+(defun toggle-maximize-buffer ()
+  "Maximize buffer"
+  (interactive)
+  (if (and (= 1 (length (window-list)))
+           (assoc ?_ register-alist))
+      (jump-to-register ?_)
+    (progn
+      (window-configuration-to-register ?_)
+      (delete-other-windows))))
 
 (defun sync-config ()
   (interactive)

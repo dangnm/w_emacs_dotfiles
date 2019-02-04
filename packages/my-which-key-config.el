@@ -33,6 +33,7 @@
                "SPC x" "text"
                "SPC xd" "delete"
                "SPC l" "layouts"
+               "SPC w" "windows"
                )
              )
 
