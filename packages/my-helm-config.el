@@ -14,6 +14,11 @@
              (add-to-list 'exec-path "/usr/local/bin/") ;;Path for running ag ...
              (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
              (load "my-helm-clear-projectile-cache-config")
+             ;;Using ESC (ctrl+G) to quit helm command
+             (with-eval-after-load "helm-command"
+                                   (define-key helm-M-x-map (kbd "ESC") 'helm-keyboard-quit)
+                                   )
+
              (add-hook 'helm-after-initialize-hook
                        (lambda()
                          (define-key helm-map (kbd "C-j") 'helm-next-line)

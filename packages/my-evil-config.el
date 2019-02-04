@@ -8,6 +8,8 @@
              (global-evil-leader-mode)
              (evil-leader/set-leader "SPC")
              (evil-leader/set-key
+               ;helm M-x
+               "SPC" 'helm-M-x
                ;File
                "ff" 'helm-find-files
                "fy" 's/show-buffer-file-path
