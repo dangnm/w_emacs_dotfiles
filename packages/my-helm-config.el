@@ -11,6 +11,7 @@
              (helm-projectile-on)
              (projectile-mode +1)
              (setq projectile-enable-caching t)
+             (add-to-list 'exec-path "/usr/local/bin/") ;;Path for running ag ...
              (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
              (load "my-helm-clear-projectile-cache-config")
              (add-hook 'helm-after-initialize-hook

@@ -6,6 +6,8 @@
              :ensure t
              :init (global-flycheck-mode'-1)
              :config
+             (setq flycheck-highlighting-mode nil)
+             (setq flycheck-ruby-rubocop-executable (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "which rubocop")))
              ;;Issue: flycheck syntax checking makes editing files really slow 
              (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
              (setq flycheck-idle-change-delay 60) ;; Set delay based on what suits you the best
