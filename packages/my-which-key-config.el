@@ -13,30 +13,6 @@
              (require 'tramp)
              (which-key-mode)
              (which-key-setup-side-window-bottom)
-             (which-key-add-key-based-replacements
-               "SPC f" "files"
-               "SPC fe" "emacs"
-               "SPC s" "search/symbol"
-               "SPC sa" "ag"
-               "SPC p" "projects"
-               "SPC t" "toggles"
-               "SPC th" "highlight"
-               "SPC b" "buffers"
-               "SPC z" "zoom"
-               "SPC a" "applications"
-               "SPC ai" "System info"
-               "SPC as" "Shell"
-               "SPC g" "Git"
-               "SPC gl" "links"
-               "SPC gf" "file"
-               "SPC j" "jump"
-               "SPC e" "errors"
-               "SPC x" "text"
-               "SPC xd" "delete"
-               "SPC l" "layouts"
-               "SPC w" "windows"
-               "SPC r" "registers"
-               )
              )
 
 (add-hook 'emacs-startup-hook 'which-key-configs-load)
