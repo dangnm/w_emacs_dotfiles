@@ -25,6 +25,7 @@
                "SPC z" "zoom"
                "SPC a" "applications"
                "SPC ai" "System info"
+               "SPC as" "Shell"
                "SPC g" "Git"
                "SPC gl" "links"
                "SPC gf" "file"
@@ -34,6 +35,7 @@
                "SPC xd" "delete"
                "SPC l" "layouts"
                "SPC w" "windows"
+               "SPC r" "registers"
                )
              )
 

@@ -9,7 +9,7 @@
 
 ; List the packages you want
 (setq package-list '(evil
-                      evil-leader 
+                      general ;evil leader map
                       bind-map ;keymap available across different “leader keys”
                       which-key 
                       helm-ag
@@ -156,6 +156,11 @@ There are two things you can do about this warning:
 (load "my-org-mode-config")
 
 ;========================================================
+; SETUP RUBY
+;========================================================
+(load "my-ruby-config")
+
+;========================================================
 ; SETUP CLIPBOARD
 ;========================================================
 (osx-clipboard-mode +1)
@@ -165,6 +170,14 @@ There are two things you can do about this warning:
 ;========================================================
 (menu-bar-mode -1) 
 (global-display-line-numbers-mode)
+(if (display-graphic-p)
+    (progn
+      ;;Font size 16pt
+      (set-face-attribute 'default nil :font "Source Code Pro-16" )
+      ;;Disable scrollbar in UI mode
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1))
+  )
 ;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
@@ -195,6 +208,15 @@ There are two things you can do about this warning:
 ;========================================================
 ; HELPERS
 ;========================================================
+(defun create-shell ()
+  "creates a shell with a given name"
+  (interactive);; "Prompt\n shell name:")
+  (let ((shell-name (read-string "shell name: " nil)))
+    (shell (concat "*" shell-name "*"))))
+
+(defun create-shell-with-name (name)
+  (shell (concat "*" name "*")))
+
 (defun s/show-buffer-file-path ()
   "Show the full path to the current file in the minibuffer."
   (interactive)
