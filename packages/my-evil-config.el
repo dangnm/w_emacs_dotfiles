@@ -12,7 +12,7 @@
           ':states ''(normal visual insert emacs)
           ':prefix leader-key
           ':keymaps ''override
-          ':non-normal-prefix "C-m"
+          ':non-normal-prefix "M-m"
           ;helm M-x
           "SPC" ''w/helm-M-x
           ;File
