@@ -166,6 +166,16 @@ There are two things you can do about this warning:
 (osx-clipboard-mode +1)
 
 ;========================================================
+; SETUP SHELL
+;========================================================
+(add-hook 'comint-mode-hook
+          (lambda ()
+            (define-key comint-mode-map (kbd "<up>") 'comint-previous-input)
+            (define-key comint-mode-map (kbd "<down>") 'comint-next-input)
+            (evil-define-key 'normal comint-mode-map (kbd "C-d") 'evil-scroll-down)
+            ))
+
+;========================================================
 ; HELPERS
 ;========================================================
 (defun create-shell ()
@@ -239,6 +249,9 @@ There are two things you can do about this warning:
 ;========================================================
 ; SETUP EDITOR
 ;========================================================
+;; Theme colors for shell
+(set-face-attribute 'comint-highlight-prompt nil
+                    :inherit nil)
 (menu-bar-mode -1) 
 ;; hide toolbar in emacs GUI
 (tool-bar-mode -1) 
