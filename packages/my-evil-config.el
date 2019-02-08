@@ -52,6 +52,7 @@
           ;Buffer
           "b" '(list ':ignore t ':which-key "buffers")
           "bb" ''w/helm-mini
+          "bR" ''evil-edit
           ;Zoom(Folding)
           "z" '(list ':ignore t ':which-key "zoom")
           "zc" ''toggle-selective-display

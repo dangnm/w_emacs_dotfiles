@@ -3,13 +3,20 @@ read -r -d '' EMACSSERVERCODE << "EOM"
 unalias em >/dev/null 2>&1
 em() {
     if [[ "$@" == "stop" ]]; then
-      kill -9 $(ps -ef | grep '.*emacs.*daemon.*' | grep -v grep | awk '{print $2}')
+      kill -9 $(ps -ef | grep '.*emacs.*daemon.*' | grep -v grep | awk '{print $2}') >/dev/null 2>&1
+      kill -9 $(ps -ef | grep '.*Emacs\.app.*daemon.*' | grep -v grep | awk '{print $2}') >/dev/null 2>&1
       return
     fi
     if [[ $(ps aux | grep -w ".*emacs.*daemon.*" | grep -v grep | wc -l) -gt 0 ]]; then
         echo "daemon is running"
         if [[ $(ps aux | grep -w ".*emacs.*daemon.*" | grep -v grep | wc -l) -gt 1 ]]; then
             kill -9 $(ps aux | grep '.*emacs.*daemon.*' | grep -v 'grep' | awk '{print $2}')
+            emacs --daemon
+        fi
+    elif [[ $(ps aux | grep -w ".*Emacs\.app.*daemon.*" | grep -v grep | wc -l) -gt 0 ]]; then
+        echo "daemon is running"
+        if [[ $(ps aux | grep -w ".*Emacs\.app.*daemon.*" | grep -v grep | wc -l) -gt 1 ]]; then
+            kill -9 $(ps aux | grep '.*Emacs\.app.*daemon.*' | grep -v 'grep' | awk '{print $2}')
             emacs --daemon
         fi
     else

@@ -69,4 +69,6 @@
                 )
               (lambda (result)
                 (message "Reload projectile cache async...")
-                ))))
+                ))
+              'ignore
+            ))

@@ -166,46 +166,6 @@ There are two things you can do about this warning:
 (osx-clipboard-mode +1)
 
 ;========================================================
-; SETUP EDITOR
-;========================================================
-(menu-bar-mode -1) 
-(global-display-line-numbers-mode)
-(if (display-graphic-p)
-    (progn
-      ;;Font size 16pt
-      (set-face-attribute 'default nil :font "Source Code Pro-16" )
-      ;;Disable scrollbar in UI mode
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1))
-  )
-;; scroll one line at a time (less "jumpy" than defaults)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboard scroll one line at a time
-;; Indent
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 2)
-(setq-default standard-indent 2)
-(setq-default js-indent-level 2)
-(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
-;;Disable lock file
-;;Emacs automatically creates a temporary symlink in the same directory as the file being edited
-(setq create-lockfiles nil)
-;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
-(custom-set-variables
-	'(auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t)))
-	'(backup-directory-alist '((".*" . "~/.emacs.d/backups/"))))
-
-;; create the autosave dir if necessary, since emacs won't.
-(make-directory "~/.emacs.d/autosaves/" t)
-;; support downcase upcase
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-;; hide toolbar in emacs GUI
-(tool-bar-mode -1) 
-
-;========================================================
 ; HELPERS
 ;========================================================
 (defun create-shell ()
@@ -275,24 +235,79 @@ There are two things you can do about this warning:
       (put 'camelcase-motion-toggle-flag 'state t))
     )
   )
+
 ;========================================================
-; OTHER CONFIGS
+; SETUP EDITOR
 ;========================================================
+(menu-bar-mode -1) 
+;; hide toolbar in emacs GUI
+(tool-bar-mode -1) 
+(global-display-line-numbers-mode)
+(defun w/setup-font-and-window ()
+    (progn
+      ;;Font size 16pt
+      (set-face-attribute 'default nil :font "Source Code Pro-16" )
+      (menu-bar-mode -1) 
+      ;;Disable scrollbar in UI mode
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1))
+    )
+(if (display-graphic-p)
+  (w/setup-font-and-window)
+  )
+(defun contextual-menubar (&optional frame)
+  "Display the menubar in FRAME (default: selected frame) if on a
+    graphical display, but hide it if in terminal."
+  (interactive)
+  (if (display-graphic-p frame)
+    (w/setup-font-and-window)
+    )
+  (set-frame-parameter frame 'menu-bar-lines 
+                             (if (display-graphic-p frame)
+                                  1 0)))
+
+;; Hide meubar when opening emacs with emacs client
+(add-hook 'after-make-frame-functions 'contextual-menubar)
+
+;; scroll one line at a time (less "jumpy" than defaults)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+;; Indent
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+(setq-default standard-indent 2)
+(setq-default js-indent-level 2)
+(define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+;;Disable lock file
+;;Emacs automatically creates a temporary symlink in the same directory as the file being edited
+(setq create-lockfiles nil)
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (evil-leader 
-                                      evil 
-                                      which-key 
-                                      helm-ag 
-                                      helm-projectile
-                                      autothemer
-                                      ))))
+ '(auto-save-file-name-transforms (quote ((".*" "~/.emacs.d/autosaves/\\1" t))))
+ '(backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/"))))
+ '(package-selected-packages
+   (quote
+    (evil-leader evil which-key helm-ag helm-projectile autothemer))))
+
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.emacs.d/autosaves/" t)
+;; support downcase upcase
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
+;========================================================
+; OTHER CONFIGS
+;========================================================
+
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
-  )
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

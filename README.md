@@ -1,12 +1,21 @@
 # Emacs-dotfiles
 
+## Update brew (optional)
+    # Clean out any previously downloaded source files
+    $ brew cleanup
+    # Check your brew installation is OK
+    $ brew doctor
+    # Update brew
+    $ brew update 
+    $ brew upgrade
 ## Install Emacs
+    # Uninstall old emacs
+    $ brew uninstall emacs
     # Install it with this command:
-    $ brew install emacs --HEAD --use-git-head --cocoa --srgb
-    # To get Emacs into Application folder 
-    $ brew linkapps
-    # Update alias to make homebrew emacs default emacs by adding the following line to .bash_profile or .zshenv
-    alias emacs="/usr/local/Cellar/emacs/HEAD/bin/emacs -nw"
+    $ brew cask install emacs
+
+## Run Emacs in terminal
+    $ emacs -nw
 
 ## Install ag search
     brew install ag
