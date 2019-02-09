@@ -20,7 +20,7 @@
                (setq ac-ignore-case t
                      ac-use-fuzzy t
                      ac-auto-start 0
-                     ac-auto-show-menu 0.8
+                     ac-auto-show-menu 2.1
                      ac-expand-on-auto-complete nil)
                ;;Auto-completion complete key mapping
                (define-key ac-completing-map (kbd "C-l") 'ac-complete)

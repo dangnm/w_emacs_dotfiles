@@ -3,6 +3,7 @@
 ;========================================================
 ; SETUP PACKAGES
 ;========================================================
+(setq my-saved-launch-directory default-directory)
 ;; set the dir where all elpa packages go
 (setq relative-config-dir "~/.emacs.d/")
 (setq package-user-dir (concat relative-config-dir "welpa"))
