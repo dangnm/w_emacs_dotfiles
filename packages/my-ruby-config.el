@@ -1,11 +1,13 @@
 (use-package rbenv
-  :ensure t
-  :defer t
+  :commands (global-rbenv-mode)
   :init (setq rbenv-show-active-ruby-in-modeline nil)
   :config (progn
             (global-rbenv-mode)
             (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)
+            (add-hook 'ruby-mode-hook 'rbenv-use-corresponding)
             ))
+
+(add-hook 'ruby-mode-hook 'global-rbenv-mode)
 
 (use-package inf-ruby
   :ensure t
@@ -22,3 +24,11 @@
        (kbd "C-j") 'comint-next-input))
   (setq inf-ruby-console-environment "development")
   )
+
+(use-package ruby-test-mode
+  :commands (ruby-test-mode)
+  :config
+  (require 'ruby-test-mode)
+  )
+
+(add-hook 'ruby-mode-hook 'ruby-test-mode)

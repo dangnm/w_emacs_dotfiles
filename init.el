@@ -8,35 +8,60 @@
 (setq package-user-dir (concat relative-config-dir "welpa"))
 
 ; List the packages you want
-(setq package-list '(evil
+(setq package-list '(
+                      ;========================================================
+                      ; Package: GENERAL
+                      ;========================================================
+                      evil ;Vi mode
                       general ;evil leader map
                       bind-map ;keymap available across different “leader keys”
-                      which-key 
+                      which-key ;key leader guide 
+                      async ;asynchronous processing in Emacs
+                      use-package ;package manager
+                      ;========================================================
+                      ; Package: Search
+                      ;========================================================
                       helm-ag
                       helm-projectile
-                      autothemer
-                      spaceline ;Bottom statusline
                       neotree ;Tree explorer
                       find-file-in-project ;neotree project path support
+                      ;========================================================
+                      ; Package: UI
+                      ;========================================================
+                      autothemer ;theme
+                      spaceline ;Bottom statusline
+                      indent-guide ;indent guide
+                      highlight-parentheses; UI: highlight
+                      ;========================================================
+                      ; Package: GIT
+                      ;========================================================
                       magit ;git tools
                       magit-popup ;git tools
                       evil-magit ;git tools with vi mode
                       git-gutter ;indicating inserted, modified or deleted lines
                       git-link ;copy github link
                       git-timemachine ;git tools
-                      indent-guide ;indent guide
+                      ;========================================================
+                      ; Package: Edit tools
+                      ;========================================================
                       flycheck ;syntax error checking
                       auto-complete
                       evil-nerd-commenter ;comment code
                       evil-surround ;surroundings: parentheses, brackets, quotes, XML tags, and more
                       avy ;jumping to visible text using a char-based decision tree
-                      async ;asynchronous processing in Emacs
+                      ;========================================================
+                      ; Package: Ruby tools
+                      ;========================================================
                       haml-mode ;Haml for ruby development
-                      highlight-parentheses; UI: highlight
+                      ruby-test-mode ; ruby development
+                      rbenv ; ruby env
+                      inf-ruby ; ruby irb
+                      ;========================================================
+                      ; Package: Workspace tools
+                      ;========================================================
                       persp-mode ;perspectives for emacs, save/recover sessions
                       osx-clipboard
                       org
-                      use-package
                       ))
 
 ; Add Melpa as the default Emacs Package repository
@@ -170,6 +195,7 @@ There are two things you can do about this warning:
 ;========================================================
 (add-hook 'comint-mode-hook
           (lambda ()
+            (toggle-truncate-lines -1) ;;Enable auto line wrapping
             (define-key comint-mode-map (kbd "<up>") 'comint-previous-input)
             (define-key comint-mode-map (kbd "<down>") 'comint-next-input)
             (evil-define-key 'normal comint-mode-map (kbd "C-d") 'evil-scroll-down)
@@ -249,6 +275,8 @@ There are two things you can do about this warning:
 ;========================================================
 ; SETUP EDITOR
 ;========================================================
+;;Disable auto line wrapping
+(set-default 'truncate-lines t)
 ;; Theme colors for shell
 (set-face-attribute 'comint-highlight-prompt nil
                     :inherit nil)

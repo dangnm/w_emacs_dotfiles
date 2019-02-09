@@ -46,6 +46,8 @@
           "tn" ''display-line-numbers-mode
           "ti" ''indent-guide-toggle
           "ts" ''flycheck-toggle
+          "tn" ''global-display-line-numbers-mode
+          "tl" ''toggle-truncate-lines
           "t C-c" ''toggle-camelcase-motion
           "th" '(list ':ignore t ':which-key "highlight")
           "thp" ''highlight-parentheses-mode
@@ -117,6 +119,18 @@
           ))
 
   (w/map-main-leader-key "SPC")
+  ;;Mapping for ruby mode
+  (general-define-key
+   :states '(normal visual insert emacs)
+   :prefix ","
+   :non-normal-prefix "M-n"
+   :keymaps 'ruby-mode-map
+   "i" '(:ignore t :which-key "inf")
+   "ia" 'inf-ruby-console-auto
+   "t" '(:ignore t :which-key "ruby/test")
+   "tb" 'ruby-test-run
+   "tt" 'ruby-test-run-at-point
+   )
   )
 
 (use-package evil
