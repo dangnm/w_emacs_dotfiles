@@ -87,7 +87,7 @@ There are two things you can do about this warning:
 (package-initialize)
 
 ;Init file paths
-(defun s/dotfiles-folder-path ()
+(defun w/dotfiles-folder-path ()
   (let ((path1 (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "dirname $(readlink ~/.emacs.d/init.el) 2>/dev/null"))))
     (if (not(string= "" path1))
       path1
@@ -95,7 +95,7 @@ There are two things you can do about this warning:
       )
     )
   )
-(setq w-dotfiles-folder-path (s/dotfiles-folder-path))
+(setq w-dotfiles-folder-path (w/dotfiles-folder-path))
 (setq evil-evilified-state-path (format "%s/packages/evil-evilified-state.el" w-dotfiles-folder-path))
 
 ;; This is only needed once, near the top of the file
