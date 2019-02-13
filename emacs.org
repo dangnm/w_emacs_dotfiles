@@ -16,6 +16,7 @@
 - [[#my-edit-tools-configs][My edit tools configs]]
   - [[#flycheck-config][Flycheck config]]
   - [[#auto-complete-config][Auto complete config]]
+  - [[#multi-cursors-config][Multi cursors config]]
 - [[#my-git-tools-config][My git tools config]]
   - [[#magit-config][Magit config]]
 - [[#my-ui-configs][My ui configs]]
