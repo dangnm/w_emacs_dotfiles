@@ -1,9 +1,10 @@
 #+TITLE: Emacs dotfiles
 * Introduction
-  Use "C-c ;" to toggle config items
-  Use "zc", "zo", "shift-tab" to expand and collapse config items
-  Use "C-x ns" and "C-x nw" to narrow or expand subtree items
-  Use "C-c '" inside lisp source to toggle edit config source code
+  - Use "C-c ;" to toggle config items
+  - Use "zc", "zo", "shift-tab" to expand and collapse config items
+  - Use "C-x ns" and "C-x nw" to narrow or expand subtree items
+  - Use "C-c '" inside lisp source to toggle edit config source code
+  - Use "C-c C-b" to jump to the subtree header
 * Helpers
   #+BEGIN_SRC emacs-lisp
     (defun create-shell ()
