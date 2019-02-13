@@ -50,6 +50,7 @@
                       evil-nerd-commenter ;comment code
                       evil-surround ;surroundings: parentheses, brackets, quotes, XML tags, and more
                       avy ;jumping to visible text using a char-based decision tree
+                      evil-mc
                       ;========================================================
                       ; Package: Ruby tools
                       ;========================================================

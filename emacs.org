@@ -158,6 +158,8 @@
                "ts" ''flycheck-toggle
                "tn" ''global-display-line-numbers-mode
                "tl" ''toggle-truncate-lines
+               "tM" '(list 'evil-mc-mode ':which-key "multi cursors(g r)")
+
                "t C-c" ''toggle-camelcase-motion
                "th" '(list ':ignore t ':which-key "highlight")
                "thp" ''highlight-parentheses-mode
@@ -716,6 +718,24 @@
       )
    #+END_SRC
 
+** Multi cursors config
+   - Use "g r f" to make a cursor at selected text (visual mode)
+   - Use "C-n" to go to the next match
+   - Use "g r n" to to skip the current match
+   - Use "C-p" to go to the previous match
+   - Use "g r u" to undo all cursors
+   #+BEGIN_SRC emacs-lisp
+     (general-define-key
+      :states '(visual)
+      "g r f" 'evil-mc-make-and-goto-first-cursor
+      )
+
+     (use-package evil-mc
+       :ensure t
+       :commands (evil-mc-make-and-goto-first-cursor evil-mc-make-cursor-here evil-mc-pause-cursors evil-mc-undo-all-cursors)
+       :config
+       (global-evil-mc-mode +1))
+   #+END_SRC
 * My git tools config
 ** Magit config
    #+BEGIN_SRC emacs-lisp
