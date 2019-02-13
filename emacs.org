@@ -1,4 +1,32 @@
 #+TITLE: Emacs dotfiles
+* Table of contents                                               :TOC:QUOTE:
+#+BEGIN_QUOTE
+- [[#introduction][Introduction]]
+- [[#helpers][Helpers]]
+- [[#my-general-configs][My general configs]]
+  - [[#evil-config][Evil config]]
+  - [[#which-key-config][Which key config]]
+  - [[#shell-config][Shell config]]
+  - [[#clipboard-config][Clipboard config]]
+  - [[#setup-theme-config][Setup theme config]]
+  - [[#setup-editor-config][Setup editor config]]
+- [[#my-search-configs][My search configs]]
+  - [[#helm-config][Helm config]]
+  - [[#neotree-config][Neotree config]]
+- [[#my-edit-tools-configs][My edit tools configs]]
+  - [[#flycheck-config][Flycheck config]]
+  - [[#auto-complete-config][Auto complete config]]
+- [[#my-git-tools-config][My git tools config]]
+  - [[#magit-config][Magit config]]
+- [[#my-ui-configs][My ui configs]]
+  - [[#space-line-config][space line config]]
+  - [[#indent-guide-config][indent guide config]]
+- [[#other-tools-configs][Other tools configs]]
+  - [[#workspacepersp-mode-config][workspace(PERSP MODE) config]]
+  - [[#org-mode-config][org mode config]]
+  - [[#ruby-mode-config][ruby mode config]]
+#+END_QUOTE
+
 * Introduction
   - Use "C-c ;" to toggle config items
   - Use "zc", "zo", "shift-tab" to expand and collapse config items

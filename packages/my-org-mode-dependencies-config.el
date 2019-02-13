@@ -5,6 +5,16 @@
  'org-babel-load-languages '((ruby . t) (shell . t)))
 
 ;========================================================
+; SETUP TOC
+;========================================================
+;; Call M-x org-set-tags-command to generate TAG for TOC
+;; Call M-x toc-org-insert-toc to generate TOC
+(add-to-list 'load-path (format "%s/toc-org" w-dotfiles-pakages-folder-path))
+(if (require 'toc-org nil t)
+    (add-hook 'org-mode-hook 'toc-org-mode)
+  (warn "toc-org not found"))
+
+;========================================================
 ; SETUP ORG MODE TMUX
 ;========================================================
 (load "ob-tmux")
