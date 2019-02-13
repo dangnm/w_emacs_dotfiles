@@ -117,6 +117,8 @@ There are two things you can do about this warning:
   (unless (package-installed-p package)
     (package-install package)))
 
+;; (setq use-package-verbose 't) ;Show use-package stat
+
 ;========================================================
 ; MAIN CONFIGS
 ;========================================================

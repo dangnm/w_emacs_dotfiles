@@ -203,8 +203,8 @@
                "ec" ''flycheck-clear
                                              ;Layouts
                "l" '(list ':ignore t ':which-key "layouts")
-               "lL" ''persp-load-state-from-file
-               "ls" ''persp-save-state-to-file
+               "lL" ''w/persp-load-state-from-file
+               "ls" ''w/persp-save-state-to-file
                                              ;Regiters
                "r" '(list ':ignore t ':which-key "registers")
                "rj" ''jump-to-register
@@ -610,72 +610,74 @@
 * My edit tools configs
 ** Flycheck config
    #+BEGIN_SRC emacs-lisp
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; FlyCheck - Syntax error checking
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (setq flycheck-disabled-checkers '(haml)) ;; Disable for haml
-    (use-package flycheck
-      :ensure t
-      :init (global-flycheck-mode'-1)
-      :config
-      (setq flycheck-highlighting-mode nil)
-      (setq flycheck-ruby-rubocop-executable (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "which rubocop")))
-      ;;Issue: flycheck syntax checking makes editing files really slow 
-      (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
-      (setq flycheck-idle-change-delay 60) ;; Set delay based on what suits you the best
-      (add-to-list 'display-buffer-alist
-                   `(,(rx bos "*Flycheck errors*" eos)
-                     (display-buffer-reuse-window
-                      display-buffer-in-side-window)
-                     (side            . bottom)
-                     (reusable-frames . 0)
-                     (window-height   . 0.33)))
-      )
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; FlyCheck - Syntax error checking
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (setq flycheck-disabled-checkers '(haml)) ;; Disable for haml
+     (setq flycheck-highlighting-mode nil)
+     (setq flycheck-ruby-rubocop-executable (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "which rubocop")))
+     ;;Issue: flycheck syntax checking makes editing files really slow 
+     (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+     (setq flycheck-idle-change-delay 60) ;; Set delay based on what suits you the best
+     (add-hook 'flycheck-mode-hook #'w/flycheck-setup)
+     (defun w/flycheck-setup ()
+       (use-package flycheck
+         :commands flycheck-mode
+         :config
+         (add-to-list 'display-buffer-alist
+                      `(,(rx bos "*Flycheck errors*" eos)
+                        (display-buffer-reuse-window
+                         display-buffer-in-side-window)
+                        (side            . bottom)
+                        (reusable-frames . 0)
+                        (window-height   . 0.33)))
+         )
+       )
 
-    (defun flycheck-toggle ()
-      (interactive)
-      ;; use a property “state”. Value is t or nil
-      (if (get 'flycheck-toggle-flag 'state)
-          (progn
-            (run-with-timer 1 nil
-                            (lambda ()
-                              (message "Disabled syntax checking")))
-            (global-flycheck-mode'-1)
-            (put 'flycheck-toggle-flag 'state nil))
-        (progn
-          (run-with-timer 1 nil
-                          (lambda ()
-                            (message "Enabled syntax checking")))
-          (global-flycheck-mode)
-          (put 'flycheck-toggle-flag 'state t))
-        ))
+     (defun flycheck-toggle ()
+       (interactive)
+       ;; use a property “state”. Value is t or nil
+       (if (get 'flycheck-toggle-flag 'state)
+           (progn
+             (run-with-timer 1 nil
+                             (lambda ()
+                               (message "Disabled syntax checking")))
+             (global-flycheck-mode'-1)
+             (put 'flycheck-toggle-flag 'state nil))
+         (progn
+           (run-with-timer 1 nil
+                           (lambda ()
+                             (message "Enabled syntax checking")))
+           (global-flycheck-mode)
+           (put 'flycheck-toggle-flag 'state t))
+         ))
 
-    (defun force-my-flycheck-enable-first-time ()
-      (if (and (not(get 'flycheck-toggle-flag 'state)) (not(get 'flycheck-toggle-first-time-flag 'state)))
-          (progn
-            (global-flycheck-mode)
-            (use-package evil-evilified-state
-              :load-path evil-evilified-state-path)
+     (defun force-my-flycheck-enable-first-time ()
+       (if (and (not(get 'flycheck-toggle-flag 'state)) (not(get 'flycheck-toggle-first-time-flag 'state)))
+           (progn
+             (global-flycheck-mode)
+             (use-package evil-evilified-state
+               :load-path evil-evilified-state-path)
 
-            (evilified-state-evilify-map flycheck-error-list-mode-map
-              :mode flycheck-error-list-mode
-              :bindings
-              "RET" 'flycheck-error-list-goto-error
-              "j" 'flycheck-error-list-next-error
-              "k" 'flycheck-error-list-previous-error)
-            (put 'flycheck-toggle-flag 'state t)
-            (put 'flycheck-toggle-first-time-flag 'state t)))
-      )
+             (evilified-state-evilify-map flycheck-error-list-mode-map
+               :mode flycheck-error-list-mode
+               :bindings
+               "RET" 'flycheck-error-list-goto-error
+               "j" 'flycheck-error-list-next-error
+               "k" 'flycheck-error-list-previous-error)
+             (put 'flycheck-toggle-flag 'state t)
+             (put 'flycheck-toggle-first-time-flag 'state t)))
+       )
 
-    (defun force-run-flycheck ()
-      (interactive)
-      (progn
-        (force-my-flycheck-enable-first-time)
-        (flycheck-buffer))
-      )
+     (defun force-run-flycheck ()
+       (interactive)
+       (progn
+         (force-my-flycheck-enable-first-time)
+         (flycheck-buffer))
+       )
 
-                                            ;Only init flycheck when saving
-    (add-hook 'after-save-hook 'force-my-flycheck-enable-first-time)
+     ;Only init flycheck when saving
+     (add-hook 'after-save-hook 'force-my-flycheck-enable-first-time)
 
    #+END_SRC
 
@@ -784,8 +786,15 @@
 * My ui configs
 ** space line config
    #+BEGIN_SRC emacs-lisp
-    (require 'spaceline-config)
-    (spaceline-spacemacs-theme)
+     (defun w/flycheck-setup ()
+       (use-package spaceline-config
+         :ensure spaceline
+         :config
+         (require 'spaceline-config)
+         (spaceline-spacemacs-theme)
+         )
+       )
+     (add-hook 'after-init-hook 'w/flycheck-setup)
    #+END_SRC
 
 ** indent guide config
@@ -827,16 +836,26 @@
    save/recover sessions
    #+BEGIN_SRC emacs-lisp
      ;; perspectives for emacs
+     (defun w/persp-load-state-from-file ()
+       (interactive)
+       (persp-mode 1)
+       (call-interactively 'persp-load-state-from-file)
+       )
+
+     (defun w/persp-save-state-to-file ()
+       (interactive)
+       (persp-mode 1)
+       (call-interactively 'persp-save-state-to-file)
+       )
+
      (use-package persp-mode
-       :ensure t
-       :diminish persp-mode
+       :commands (persp-mode)
        :init
        (setq wg-morph-on nil ;; switch off animation
              persp-add-buffer-on-after-change-major-mode t
              persp-auto-resume-time -1
              persp-autokill-buffer-on-remove 'kill-weak
              persp-save-dir (expand-file-name "~/.emacs.d/.cache/layouts/"))
-       (add-hook 'after-init-hook (lambda () (persp-mode 1)))
        )
    #+END_SRC
 ** org mode config
