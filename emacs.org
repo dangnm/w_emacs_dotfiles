@@ -1,0 +1,857 @@
+#+TITLE: Emacs dotfiles
+* Introduction
+  Use "C-c ;" to toggle config items
+  Use "zc", "zo", "shift-tab" to expand and collapse config items
+  Use "C-x ns" and "C-x nw" to narrow or expand subtree items
+  Use "C-c '" inside lisp source to toggle edit config source code
+* Helpers
+  #+BEGIN_SRC emacs-lisp
+    (defun create-shell ()
+      "creates a shell with a given name"
+      (interactive);; "Prompt\n shell name:")
+      (let ((shell-name (read-string "shell name: " nil)))
+        (shell (concat "*" shell-name "*"))))
+
+    (defun create-shell-with-name (name)
+      (shell (concat "*" name "*")))
+
+    (defun s/show-buffer-file-path ()
+      "Show the full path to the current file in the minibuffer."
+      (interactive)
+      (let ((file-name (buffer-file-name)))
+        (if file-name
+            (progn
+              (message file-name)
+              (kill-new file-name))
+          (error "Buffer not visiting a file"))))
+
+    (defun s/show-buffer-file-name ()
+      "Show the full path to the current file in the minibuffer."
+      (interactive)
+      (let ((file-name (file-name-nondirectory(buffer-file-name))))
+        (if file-name
+            (progn
+              (message file-name)
+              (kill-new file-name))
+          (error "Buffer not visiting a file"))))
+
+                                            ; Folding
+    (defun toggle-selective-display (column)
+      (interactive "P")
+      (set-selective-display
+       (or column
+           (unless selective-display
+             (1+ (current-column))))))
+
+    (defun toggle-camelcase-underscores ()
+      "Toggle between camelcase and underscore notation for the symbol at point."
+      (interactive)
+      (save-excursion
+        (let* ((bounds (bounds-of-thing-at-point 'symbol))
+               (start (car bounds))
+               (end (cdr bounds))
+               (currently-using-underscores-p (progn (goto-char start)
+                                                     (re-search-forward "_" end t))))
+          (if currently-using-underscores-p
+              (progn
+                (upcase-initials-region start end)
+                (replace-string "_" "" nil start end)
+                (downcase-region start (1+ start)))
+            (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
+            (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
+
+    (defun toggle-camelcase-motion ()
+      (interactive)
+      (if (get 'camelcase-motion-toggle-flag 'state)
+          (progn
+            (message "Disabled camelcase motion")
+            (subword-mode'-1)
+            (put 'camelcase-motion-toggle-flag'state nil))
+        (progn
+          (message "Enabled camelcase motion")
+          (subword-mode)
+          (put 'camelcase-motion-toggle-flag 'state t))
+        )
+      )
+  #+END_SRC
+* My general configs
+** Evil config
+   #+BEGIN_SRC emacs-lisp
+     (setq evil-want-C-u-scroll t)
+
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; Evil
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+     (use-package general
+       :config
+       (require 'general)
+       (general-evil-setup t)
+       (general-override-mode)
+       (defmacro w/map-main-leader-key (leader-key)
+         (list 'general-define-key
+               ':states ''(normal visual insert emacs)
+               ':prefix leader-key
+               ':keymaps ''override
+               ':non-normal-prefix "M-m"
+                                             ;helm M-x
+               "SPC" ''w/helm-M-x
+                                             ;File
+               "f" '(list ':ignore t ':which-key "Files")
+               "ff" ''helm-find-files
+               "fy" ''s/show-buffer-file-path
+               "fY" ''s/show-buffer-file-name
+               "ft" ''neotree-project-dir-toggle
+               "fw" ''save-buffer
+               "fx" ''evil-quit
+               "fe" '(list ':ignore t ':which-key "emacs")
+               "fes" ''sync-config
+                                             ;Projects
+               "p" '(list ':ignore t ':which-key "projects")
+               "pf" ''helm-projectile-find-file
+               "pg" ''find-my-tag
+               "pG" ''projectile-regenerate-tags
+               "pD" ''w/projectile-dired
+               "pr" ''projectile-recentf
+               "pI" ''projectile-invalidate-cache
+               "pp" ''w/projectile-switch-project
+                                             ;Search
+               "s" '(list ':ignore t ':which-key "search/symbol")
+               "sf" ''helm-do-ag
+               "sp" ''helm-do-ag-project-root
+               "sa" '(list ':ignore t ':which-key "ag")
+               "saf" ''helm-do-ag
+               "saa" ''helm-do-ag-this-file
+                                             ;Toggle
+               "t" '(list ':ignore t ':which-key "toggles")
+               "tn" ''display-line-numbers-mode
+               "ti" ''indent-guide-toggle
+               "ts" ''flycheck-toggle
+               "tn" ''global-display-line-numbers-mode
+               "tl" ''toggle-truncate-lines
+               "t C-c" ''toggle-camelcase-motion
+               "th" '(list ':ignore t ':which-key "highlight")
+               "thp" ''highlight-parentheses-mode
+                                             ;Buffer
+               "b" '(list ':ignore t ':which-key "buffers")
+               "bb" ''w/helm-mini
+               "bR" ''evil-edit
+                                             ;Zoom(Folding)
+               "z" '(list ':ignore t ':which-key "zoom")
+               "zc" ''toggle-selective-display
+                                             ;Applications
+               "a" '(list ':ignore t ':which-key "applications")
+               "ad" ''dired
+               "ap" ''list-processes
+               "ai" '(list ':ignore t ':which-key "System info")
+               "ait" ''emacs-init-time
+               "as" '(list ':ignore t ':which-key "Shell")
+               "asn" ''create-shell
+                                             ;Git
+               "g" '(list ':ignore t ':which-key "Git")
+               "gb" ''magit-blame
+               "gm" ''magit-dispatch-popup
+               "gt" ''git-timemachine
+               "gs" ''magit-status
+               "gf" '(list ':ignore t ':which-key "file")
+               "gfh" ''magit-log-buffer-file
+               "gfb" ''magit-log-all-branches
+               "gl" '(list ':ignore t ':which-key "links")
+               "gll" ''git-link
+                                             ;Jump
+               "j" '(list ':ignore t ':which-key "jump")
+               "jj" ''evil-avy-goto-char
+               "jJ" ''evil-avy-goto-char-2
+               "jl" ''evil-avy-goto-line
+               "jw" ''evil-avy-goto-word-or-subword-1
+                                             ;Error
+               "e" '(list ':ignore t ':which-key "errors")
+               "ef" ''force-run-flycheck
+               "el" ''flycheck-list-errors
+               "en" ''next-error
+               "eN" ''previous-error
+               "ep" ''previous-error
+               "ec" ''flycheck-clear
+                                             ;Layouts
+               "l" '(list ':ignore t ':which-key "layouts")
+               "lL" ''persp-load-state-from-file
+               "ls" ''persp-save-state-to-file
+                                             ;Regiters
+               "r" '(list ':ignore t ':which-key "registers")
+               "rj" ''jump-to-register
+               "rw" ''window-configuration-to-register
+                                             ;Windows
+               "w" '(list ':ignore t ':which-key "windows")
+               "w/" ''split-window-right
+               "w-" ''split-window-below
+               "wv" ''split-window-right
+               "ws" ''split-window-below
+               "wd" ''delete-window
+               "wm" ''toggle-maximize-buffer
+               "wj" ''evil-window-down
+               "wk" ''evil-window-up
+               "wh" ''evil-window-left
+               "wl" ''evil-window-right
+                                             ;Text
+               "x" '(list ':ignore t ':which-key "text")
+               "xU" ''upcase-region
+               "xu" ''downcase-region
+               "xs" ''toggle-camelcase-underscores
+               "xd" '(list ':ignore t ':which-key "delete")
+               "xdw" ''delete-trailing-whitespace
+               ))
+
+       (w/map-main-leader-key "SPC")
+       ;;Mapping for ruby mode
+       (defun w/remap-ruby-mode-leader-key ()
+         (interactive)
+         (which-key-add-key-based-replacements ",t" "ruby/test")
+         )
+       (add-hook 'ruby-mode-hook 'w/remap-ruby-mode-leader-key)
+       (general-define-key
+        :states '(normal visual insert emacs)
+        :prefix ","
+        :non-normal-prefix "M-n"
+        :keymaps 'ruby-mode-map
+        "i" '(:ignore t :which-key "inf")
+        "ia" 'inf-ruby-console-auto
+        "t" '(:ignore t :which-key "ruby/test")
+        "tb" 'ruby-test-run
+        "tt" 'ruby-test-run-at-point
+        "ts" '(ruby-test-toggle-implementation-and-specification :which-key "Ruby test toggle")
+        )
+       ;;Mapping for dired mode
+       (defun w/remap-dired-mode-leader-key ()
+         (interactive)
+         (which-key-add-key-based-replacements ",t" "toggles")
+         )
+       (add-hook 'dired-hook 'w/remap-dired-mode-leader-key)
+       (general-define-key
+        :states '(normal visual insert emacs)
+        :prefix ","
+        :non-normal-prefix "M-n"
+        :keymaps 'dired-mode-map
+        "," 'dired-up-directory
+        "u" '(dired-unmark :which-key "unmark(u)")
+        "m" '(dired-mark :which-key "mark(m)")
+        "r" '(revert-buffer-no-confirm :which-key "refresh(r)")
+        "j" 'dired-next-subdir
+        "k" 'dired-prev-subdir
+        "h" 'w/dired-go-to-home-folder
+        "f" 'helm-find-files
+        "F" 'find-name-dired
+                                             ;Actions
+        "a" '(:ignore t :which-key "Actions")
+        "af" '(:ignore t :which-key "Files")
+        "afn" '(find-file :which-key "Create file")
+        "afN" 'dired-create-directory
+        "afr" '(dired-do-rename :which-key "Rename(Shift + r)")
+        "afd" '(dired-do-delete :which-key "Delete(Shift + d)")
+        "ae" '(:ignore t :which-key "Edit")
+        "aex" '(dired-copy-paste-do-cut :which-key "Cut")
+        "aec" '(dired-copy-paste-do-copy :which-key "Copy")
+        "aep" '(dired-copy-paste-do-paste :which-key "Paste")
+                                             ;Toggle
+        "t" '(:ignore t :which-key "toggles")
+        "td" 'dired-hide-details-mode
+        )
+       )
+
+     (use-package evil
+       :config
+       (require 'evil)
+       (evil-mode t)
+       (define-key evil-motion-state-map (kbd "C-u") 'evil-scroll-up)
+       (with-eval-after-load "dired" ;"dired mapping"
+         ;; vimify some keybinds.
+         (define-key dired-mode-map (kbd "j") #'dired-next-line)
+         (define-key dired-mode-map (kbd "k") #'dired-previous-line)
+         (define-key dired-mode-map (kbd "n") #'evil-search-next)
+         (define-key dired-mode-map (kbd "N") #'evil-search-previous))
+
+       (use-package evil-surround
+         :config
+         (progn
+           (global-evil-surround-mode 1)
+           (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))
+           (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))))
+       )
+
+     ;; evil-nerd-commenter
+     (use-package evil-nerd-commenter
+       :init
+       (with-eval-after-load "evil"
+         (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
+         ))
+
+     ;; from https://gist.github.com/3402786
+     (defun toggle-maximize-buffer ()
+       "Maximize buffer"
+       (interactive)
+       (if (and (= 1 (length (window-list)))
+                (assoc ?_ register-alist))
+           (jump-to-register ?_)
+         (progn
+           (window-configuration-to-register ?_)
+           (delete-other-windows))))
+
+     (defun sync-config ()
+       (interactive)
+       (load-file user-init-file)
+       )
+
+     (defun find-my-tag ()
+       (interactive)
+       (if (not(fboundp 'my-find-tag-and-load-config))
+           (progn
+             (load "my-tags-config")
+             (my-find-tag-and-load-config))
+         (my-find-tag-and-load-config))
+       )
+
+
+                                             ;========================================================
+                                             ; SETUP DIRED
+                                             ;========================================================
+     ;; Source: http://www.emacswiki.org/emacs-en/download/misc-cmds.el
+     (defun revert-buffer-no-confirm ()
+       "Revert buffer without confirmation."
+       (interactive)
+       (revert-buffer :ignore-auto :noconfirm))
+
+     (defun w/dired-go-to-home-folder ()
+       (interactive)
+       (if (not(string= "~/" default-directory))
+           (find-alternate-file "~/")
+         )
+       )
+
+     (defun dired-copy-paste-do-cut ()
+       "In dired-mode, cut a file/dir on current line or all marked file/dir(s)."
+       (interactive)
+       (setq dired-copy-paste-stored-file-list (dired-get-marked-files)
+             dired-copy-paste-func 'rename-file)
+       (message
+        (format "%S is/are cut."dired-copy-paste-stored-file-list)))
+
+
+     (defun dired-copy-paste-do-copy ()
+       "In dired-mode, copy a file/dir on current line or all marked file/dir(s)."
+       (interactive)
+       (setq dired-copy-paste-stored-file-list (dired-get-marked-files)
+             dired-copy-paste-func 'copy-file)
+       (message
+        (format "%S is/are copied."dired-copy-paste-stored-file-list)))
+
+
+     (defun dired-copy-paste-do-paste ()
+       "In dired-mode, paste cut/copied file/dir(s) into current directory."
+       (interactive)
+       (let ((stored-file-list nil))
+         (dolist (stored-file dired-copy-paste-stored-file-list)
+           (condition-case nil
+               (progn
+                 (funcall dired-copy-paste-func stored-file (dired-current-directory) 1)
+                 (push stored-file stored-file-list))
+             (error nil)))
+         (if (eq dired-copy-paste-func 'rename-file)
+             (setq dired-copy-paste-stored-file-list nil
+                   dired-copy-paste-func nil))
+         (revert-buffer)
+         (message
+          (format "%d file/dir(s) pasted into current directory." (length stored-file-list)))))
+   #+END_SRC
+** Which key config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Which key
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (use-package which-key
+      :commands (which-key-configs-load)
+      :config
+      (defun which-key-configs-load ()
+        t)
+      (run-with-timer 3 nil
+                      (lambda ()
+                        (message "Loading which-key configs...")))
+      (require 'which-key)
+      (require 'tramp)
+      (which-key-mode)
+      (which-key-setup-side-window-bottom)
+      )
+
+    (add-hook 'emacs-startup-hook 'which-key-configs-load)
+   #+END_SRC
+
+** Shell config
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'comint-mode-hook
+               (lambda ()
+                 (toggle-truncate-lines -1) ;;Enable auto line wrapping
+                 (define-key comint-mode-map (kbd "<up>") 'comint-previous-input)
+                 (define-key comint-mode-map (kbd "<down>") 'comint-next-input)
+                 (evil-define-key 'normal comint-mode-map (kbd "C-d") 'evil-scroll-down)
+                 ))
+   #+END_SRC
+** Clipboard config
+  #+BEGIN_SRC emacs-lisp
+    (osx-clipboard-mode +1)
+  #+END_SRC
+** Setup theme config
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path (format "%s/themes" w-dotfiles-folder-path))
+     (add-to-list 'custom-theme-load-path (format "%s/themes" w-dotfiles-folder-path))
+     ;(load-theme 'monokai t)
+     (load-theme 'gruvbox-dark-medium t)
+   #+END_SRC
+** Setup editor config
+   #+BEGIN_SRC emacs-lisp
+     ;;Disable auto line wrapping
+     (set-default 'truncate-lines t)
+     ;; Theme colors for shell
+     (set-face-attribute 'comint-highlight-prompt nil
+                         :inherit nil)
+     (menu-bar-mode -1) 
+     ;; hide toolbar in emacs GUI
+     (tool-bar-mode -1) 
+     (global-display-line-numbers-mode)
+     (defun w/setup-font-and-window ()
+       (progn
+         ;;Font size 16pt
+         (set-face-attribute 'default nil :font "Source Code Pro-16" )
+         (menu-bar-mode -1) 
+         ;;Disable scrollbar in UI mode
+         (tool-bar-mode -1)
+         (scroll-bar-mode -1))
+       )
+     (if (display-graphic-p)
+         (w/setup-font-and-window)
+       )
+     (defun contextual-menubar (&optional frame)
+       "Display the menubar in FRAME (default: selected frame) if on a
+         graphical display, but hide it if in terminal."
+       (interactive)
+       (if (display-graphic-p frame)
+           (w/setup-font-and-window)
+         )
+       (set-frame-parameter frame 'menu-bar-lines 
+                            (if (display-graphic-p frame)
+                                1 0)))
+
+     ;; Hide meubar when opening emacs with emacs client
+     (add-hook 'after-make-frame-functions 'contextual-menubar)
+
+     ;; scroll one line at a time (less "jumpy" than defaults)
+     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+     (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+     (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+     (setq scroll-step 1) ;; keyboard scroll one line at a time
+     ;; Indent
+     (setq-default indent-tabs-mode nil)
+     (setq-default tab-width 2)
+     (setq-default standard-indent 2)
+     (setq-default js-indent-level 2)
+     (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+     ;;Disable lock file
+     ;;Emacs automatically creates a temporary symlink in the same directory as the file being edited
+     (setq create-lockfiles nil)
+     ;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+     (custom-set-variables
+      ;; custom-set-variables was added by Custom.
+      ;; If you edit it by hand, you could mess it up, so be careful.
+      ;; Your init file should contain only one such instance.
+      ;; If there is more than one, they won't work right.
+      '(auto-save-file-name-transforms (quote ((".*" "~/.emacs.d/autosaves/\\1" t))))
+      '(backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/"))))
+      '(package-selected-packages
+        (quote
+         (evil-leader evil which-key helm-ag helm-projectile autothemer))))
+
+     ;; create the autosave dir if necessary, since emacs won't.
+     (make-directory "~/.emacs.d/autosaves/" t)
+     ;; support downcase upcase
+     (put 'downcase-region 'disabled nil)
+     (put 'upcase-region 'disabled nil)
+   #+END_SRC
+* My search configs
+** Helm config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Helm
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (use-package helm-projectile
+      :commands (helm-projectile-configs-load helm-mode helm-projectile-find-file projectile-switch-project)
+      :config
+      (defun helm-projectile-configs-load ()
+        t)
+      (run-with-timer 3 nil
+                      (lambda ()
+                        (message "Loading helm configs...")))
+      (require 'helm-projectile)
+      (helm-projectile-on)
+      (projectile-mode +1)
+      (setq projectile-enable-caching t)
+      (add-to-list 'exec-path "/usr/local/bin/") ;;Path for running ag ...
+      (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
+      (load "my-helm-clear-projectile-cache-config")
+      ;;Using ESC (ctrl+G) to quit helm command
+      (with-eval-after-load "helm-command"
+        (define-key helm-M-x-map (kbd "ESC") 'helm-keyboard-quit)
+        )
+
+      (add-hook 'helm-after-initialize-hook
+                (lambda()
+                  (define-key helm-map (kbd "C-j") 'helm-next-line)
+                  (define-key helm-map (kbd "C-k") 'helm-previous-line)))
+      )
+
+    (defun w/projectile-switch-project ()
+      (interactive)
+      (helm-projectile-configs-load)
+      (helm-projectile-switch-project)
+      )
+
+    (defun w/projectile-dired ()
+      (interactive)
+      (helm-projectile-configs-load)
+      (projectile-dired)
+      )
+
+    (defun w/helm-M-x ()
+      (interactive)
+      (helm-projectile-configs-load)
+      (call-interactively 'helm-M-x)
+      )
+
+    (defun w/helm-mini ()
+      (interactive)
+      (helm-projectile-configs-load)
+      (call-interactively 'helm-mini)
+      )
+   #+END_SRC
+
+** Neotree config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Neo tree
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (use-package neotree
+      :commands (neotree-mode)
+      :config
+      (require 'neotree)
+      (message "Loading neotree configs...")
+      (with-eval-after-load 'neotree
+        (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
+        (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
+        (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
+        (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+        (evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
+        (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-next-line)
+        (evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
+        (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
+        (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
+        (evil-define-key 'normal neotree-mode-map (kbd "m") 'neotree-rename-node)
+        (evil-define-key 'normal neotree-mode-map (kbd "c") 'neotree-create-node)
+        (evil-define-key 'normal neotree-mode-map (kbd "d") 'neotree-delete-node))
+      )
+
+    (defun neotree-project-dir-toggle ()
+      "Open NeoTree using the project root, using find-file-in-project,
+      or the current buffer directory."
+      (interactive)
+      (let ((project-dir
+             (ignore-errors
+                ;;; Pick one: projectile or find-file-in-project
+                                            ; (projectile-project-root)
+               (ffip-project-root)
+               ))
+            (file-name (buffer-file-name))
+            (neo-smart-open t))
+        (if (and (fboundp 'neo-global--window-exists-p)
+                 (neo-global--window-exists-p))
+            (neotree-hide)
+          (progn
+            (neotree-show)
+            (if project-dir
+                (neotree-dir project-dir))
+            (if file-name
+                (neotree-find file-name))))))
+   #+END_SRC
+
+* My edit tools configs
+** Flycheck config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; FlyCheck - Syntax error checking
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (setq flycheck-disabled-checkers '(haml)) ;; Disable for haml
+    (use-package flycheck
+      :ensure t
+      :init (global-flycheck-mode'-1)
+      :config
+      (setq flycheck-highlighting-mode nil)
+      (setq flycheck-ruby-rubocop-executable (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "which rubocop")))
+      ;;Issue: flycheck syntax checking makes editing files really slow 
+      (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+      (setq flycheck-idle-change-delay 60) ;; Set delay based on what suits you the best
+      (add-to-list 'display-buffer-alist
+                   `(,(rx bos "*Flycheck errors*" eos)
+                     (display-buffer-reuse-window
+                      display-buffer-in-side-window)
+                     (side            . bottom)
+                     (reusable-frames . 0)
+                     (window-height   . 0.33)))
+      )
+
+    (defun flycheck-toggle ()
+      (interactive)
+      ;; use a property “state”. Value is t or nil
+      (if (get 'flycheck-toggle-flag 'state)
+          (progn
+            (run-with-timer 1 nil
+                            (lambda ()
+                              (message "Disabled syntax checking")))
+            (global-flycheck-mode'-1)
+            (put 'flycheck-toggle-flag 'state nil))
+        (progn
+          (run-with-timer 1 nil
+                          (lambda ()
+                            (message "Enabled syntax checking")))
+          (global-flycheck-mode)
+          (put 'flycheck-toggle-flag 'state t))
+        ))
+
+    (defun force-my-flycheck-enable-first-time ()
+      (if (and (not(get 'flycheck-toggle-flag 'state)) (not(get 'flycheck-toggle-first-time-flag 'state)))
+          (progn
+            (global-flycheck-mode)
+            (use-package evil-evilified-state
+              :load-path evil-evilified-state-path)
+
+            (evilified-state-evilify-map flycheck-error-list-mode-map
+              :mode flycheck-error-list-mode
+              :bindings
+              "RET" 'flycheck-error-list-goto-error
+              "j" 'flycheck-error-list-next-error
+              "k" 'flycheck-error-list-previous-error)
+            (put 'flycheck-toggle-flag 'state t)
+            (put 'flycheck-toggle-first-time-flag 'state t)))
+      )
+
+    (defun force-run-flycheck ()
+      (interactive)
+      (progn
+        (force-my-flycheck-enable-first-time)
+        (flycheck-buffer))
+      )
+
+                                            ;Only init flycheck when saving
+    (add-hook 'after-save-hook 'force-my-flycheck-enable-first-time)
+
+   #+END_SRC
+
+** Auto complete config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Auto Complete
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (use-package auto-complete
+      :commands auto-complete-mode
+      :init 
+      (progn
+        (auto-complete-mode t))
+      :bind (("C-n" . ac-next)
+             ("C-p" . ac-previous))
+      :config
+      (use-package auto-complete-config)
+      (ac-config-default)
+      (setq ac-delay 0.02)
+      (setq ac-use-menu-map t)
+      (setq ac-use-quick-help nil) 
+      (setq ac-ignore-case nil)
+      (setq ac-dwim  t)
+      (setq ac-fuzzy-enable t)
+      (setq ac-ignore-case t
+            ac-use-fuzzy t
+            ac-auto-start 0
+            ac-auto-show-menu 2.1
+            ac-expand-on-auto-complete nil)
+      ;;Auto-completion complete key mapping
+      (define-key ac-completing-map (kbd "C-l") 'ac-complete)
+      ;;Trigger auto complete menu
+      (with-eval-after-load "evil"
+        (define-key evil-insert-state-map (kbd "C-f") 'auto-complete)
+        )
+      )
+   #+END_SRC
+
+* My git tools config
+** Magit config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Magit - GIT tools
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (use-package magit
+      :commands (magit-blame-mode magit-blame)
+      :config
+      (evil-make-overriding-map magit-blame-mode-map 'normal)
+      (add-hook 'magit-blame-mode-hook 'evil-normalize-keymaps)
+      (evil-define-key 'normal magit-blame-mode-map (kbd "q") 'magit-blame-quit)
+
+      (require 'evil-magit)
+                                            ;Full screen git status
+      (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+      (define-key magit-mode-map "\C-j" 'magit-section-forward)
+      (define-key magit-mode-map "\C-k" 'magit-section-backward)
+      (define-key magit-mode-map "\M-j" 'magit-section-forward-sibling)
+      (define-key magit-mode-map "\M-k" 'magit-section-backward-sibling)
+      )
+
+    (use-package git-timemachine
+      :commands (git-timemachine)
+      :config
+
+      (defun git-timemachine-blame ()
+        "Call magit-blame on current revision."
+        (interactive)
+        (if (fboundp 'magit-blame)
+            (let ((magit-buffer-revision (car git-timemachine-revision)))
+              (magit-blame))
+          (message "You need to install magit for blame capabilities")))
+
+      (defun git-timemachine-find-revision-by-id (revision-id)
+        (require 'cl)
+        (message revision-id)
+        (cl-loop for v in (git-timemachine--revisions)
+                 until (cl-search revision-id (nth 0 v))
+                 finally return v
+                 )
+        )
+      (defun git-timemachine-go-to-revision-id (revision-id)
+        (interactive "sEnter revision id: ")
+        (git-timemachine-show-revision (git-timemachine-find-revision-by-id revision-id))
+        )
+      (evil-define-key 'normal git-timemachine-mode-map (kbd "G") 'git-timemachine-go-to-revision-id)
+      )
+
+    (use-package git-gutter
+      :commands (global-git-gutter-mode git-gutter-mode)
+      :config
+      (progn
+        (set-face-background 'git-gutter:deleted "#990A1B")
+        (set-face-foreground 'git-gutter:modified "#00736F")
+        (set-face-foreground 'git-gutter:added "#546E00"))
+      )
+                                            ;Init git gutter when saving
+    (add-hook 'after-save-hook 'git-gutter-mode)
+
+    (eval-after-load 'git-timemachine
+      '(progn
+         (evil-make-overriding-map git-timemachine-mode-map 'normal)
+         ;; force update evil keymaps after git-timemachine-mode loaded
+         (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)))
+   #+END_SRC
+
+* My ui configs
+** space line config
+   #+BEGIN_SRC emacs-lisp
+    (require 'spaceline-config)
+    (spaceline-spacemacs-theme)
+   #+END_SRC
+
+** indent guide config
+   #+BEGIN_SRC emacs-lisp
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Indent guide
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (use-package indent-guide
+      :commands (indent-guide-global-mode)
+      :config
+      (run-with-timer 3 nil
+                      (lambda ()
+                        (message "Loading indent-guide configs...")))
+      (require 'indent-guide)
+      )
+
+    (defun indent-guide-toggle ()
+      (interactive)
+      ;; use a property “state”. Value is t or nil
+      (if (get 'indent-guide-toggle-flag 'state)
+          (progn
+            (run-with-timer 1 nil
+                            (lambda ()
+                              (message "Disabled indent guide")))
+            (indent-guide-global-mode -1)
+            (put 'indent-guide-toggle-flag 'state nil))
+        (progn
+          (run-with-timer 1 nil
+                          (lambda ()
+                            (message "Enabled indent guide")))
+          (indent-guide-global-mode)
+          (put 'indent-guide-toggle-flag 'state t))
+        ))
+
+   #+END_SRC
+
+* Other tools configs
+** workspace(PERSP MODE) config
+   save/recover sessions
+   #+BEGIN_SRC emacs-lisp
+     ;; perspectives for emacs
+     (use-package persp-mode
+       :ensure t
+       :diminish persp-mode
+       :init
+       (setq wg-morph-on nil ;; switch off animation
+             persp-add-buffer-on-after-change-major-mode t
+             persp-auto-resume-time -1
+             persp-autokill-buffer-on-remove 'kill-weak
+             persp-save-dir (expand-file-name "~/.emacs.d/.cache/layouts/"))
+       (add-hook 'after-init-hook (lambda () (persp-mode 1)))
+       )
+   #+END_SRC
+** org mode config
+   #+BEGIN_SRC emacs-lisp
+     (defun loading-org-mode-dependencies ()
+       (interactive)
+       (load "my-org-mode-dependencies-config")
+       )
+     (add-hook 'org-mode-hook 'loading-org-mode-dependencies)
+   #+END_SRC
+** ruby mode config
+   #+BEGIN_SRC emacs-lisp
+     (use-package rbenv
+       :commands (global-rbenv-mode)
+       :init (setq rbenv-show-active-ruby-in-modeline nil)
+       :config (progn
+                 (global-rbenv-mode)
+                 (add-hook 'enh-ruby-mode-hook 'rbenv-use-corresponding)
+                 (add-hook 'ruby-mode-hook 'rbenv-use-corresponding)
+                 ))
+
+     (add-hook 'ruby-mode-hook 'global-rbenv-mode)
+
+     (use-package inf-ruby
+       :ensure t
+       :init
+       (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
+       :config
+       (eval-after-load 'inf-ruby
+         '(rbenv-use-corresponding))
+       (eval-after-load 'inf-ruby
+         '(define-key inf-ruby-mode-map
+            (kbd "C-k") 'comint-previous-input))
+       (eval-after-load 'inf-ruby
+         '(define-key inf-ruby-mode-map
+            (kbd "C-j") 'comint-next-input))
+       (setq inf-ruby-console-environment "development")
+       )
+
+     (use-package ruby-test-mode
+       :commands (ruby-test-mode)
+       :config
+       (require 'ruby-test-mode)
+       )
+
+     (add-hook 'ruby-mode-hook 'ruby-test-mode)
+   #+END_SRC
