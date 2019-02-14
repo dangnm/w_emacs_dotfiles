@@ -123,8 +123,11 @@ There are two things you can do about this warning:
 ;========================================================
 ; MAIN CONFIGS
 ;========================================================
-(require 'org)
+(if (or (not (boundp 'w/is-running-an-async-job)) (not w/is-running-an-async-job))
+    (progn
+      (require 'org)
+      (org-babel-load-file
+       (expand-file-name "emacs.org"
+                         w-dotfiles-folder-path))
+      ))
 
-(org-babel-load-file
- (expand-file-name "emacs.org"
-                   w-dotfiles-folder-path))

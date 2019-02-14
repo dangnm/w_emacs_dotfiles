@@ -55,12 +55,13 @@
 
 (add-hook 'helm-after-initialize-hook
           (lambda()
-            (setq my-saved-project-directory (ffip-project-root))
+            (setq my-saved-project-directory (projectile-project-root))
             (async-start
               `(lambda ()
                 ,(async-inject-variables "\\`my-saved-project-directory\\'")
+                (setq w/is-running-an-async-job 't) 
                 (load-file "~/.emacs.d/init.el")
-                (if (not(string= "~/" my-saved-launch-directory))
+                (if my-saved-project-directory
                     (progn
                       (require 'helm-projectile)
                       (dired my-saved-project-directory)
