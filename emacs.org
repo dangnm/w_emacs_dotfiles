@@ -834,7 +834,7 @@
 * My ui configs
 ** space line config
    #+BEGIN_SRC emacs-lisp
-     (defun w/flycheck-setup ()
+     (defun w/spaceline-setup ()
        (use-package spaceline-config
          :ensure spaceline
          :config
@@ -842,7 +842,7 @@
          (spaceline-spacemacs-theme)
          )
        )
-     (add-hook 'after-init-hook 'w/flycheck-setup)
+     (add-hook 'after-init-hook 'w/spaceline-setup)
    #+END_SRC
 
 ** indent guide config
