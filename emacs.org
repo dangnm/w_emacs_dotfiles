@@ -417,6 +417,13 @@
 
 ** Shell config
    #+BEGIN_SRC emacs-lisp
+     (add-hook 'shell-mode-hook
+               (lambda ()
+                 ;;Prevent backspace from deleting my shell prompt
+                 (setq comint-prompt-read-only t)
+                 ;;Go to the end of buffer to input when switching to insert mode
+                 (add-hook 'evil-insert-state-entry-hook 'w/go-to-the-last-shell-prompt-maybe nil t)
+                 ))
      (add-hook 'comint-mode-hook
                (lambda ()
                  (toggle-truncate-lines -1) ;;Enable auto line wrapping
@@ -424,6 +431,26 @@
                  (define-key comint-mode-map (kbd "<down>") 'comint-next-input)
                  (evil-define-key 'normal comint-mode-map (kbd "C-d") 'evil-scroll-down)
                  ))
+
+     ;;Go to the end of buffer to input when point is before the prompt.
+     (defun w/go-to-the-last-shell-prompt-maybe ()
+       (interactive)
+       (let ((proc (get-buffer-process (current-buffer))))
+         (if (not(and proc (>= (point) (marker-position (process-mark proc)))))
+           (goto-char (point-max)))))
+
+     ;;Prevent RET sending input from anywhere
+     (defun w/my-comint-send-input-maybe ()
+       "Only `comint-send-input' when point is after the latest prompt. 
+     Otherwise move to the end of the buffer."
+       (interactive)
+       (let ((proc (get-buffer-process (current-buffer))))
+         (if (and proc (>= (point) (marker-position (process-mark proc))))
+             (comint-send-input)
+           (goto-char (point-max)))))
+
+     (with-eval-after-load "comint"
+       (define-key shell-mode-map [remap comint-send-input] 'w/my-comint-send-input-maybe))
    #+END_SRC
 ** Clipboard config
   #+BEGIN_SRC emacs-lisp
