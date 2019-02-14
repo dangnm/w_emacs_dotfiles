@@ -423,6 +423,8 @@
                  (setq comint-prompt-read-only t)
                  ;;Go to the end of buffer to input when switching to insert mode
                  (add-hook 'evil-insert-state-entry-hook 'w/go-to-the-last-shell-prompt-maybe nil t)
+                 (evil-define-key 'normal comint-mode-map (kbd "o") 'w/go-to-the-last-shell-prompt-maybe)
+                 (evil-define-key 'normal comint-mode-map (kbd "p") 'w/shell-evil-paste-after)
                  ))
      (add-hook 'comint-mode-hook
                (lambda ()
@@ -431,6 +433,13 @@
                  (define-key comint-mode-map (kbd "<down>") 'comint-next-input)
                  (evil-define-key 'normal comint-mode-map (kbd "C-d") 'evil-scroll-down)
                  ))
+
+     ;; evil-paste-after for shell mode 
+     (defun w/shell-evil-paste-after ()
+       (interactive)
+       (w/go-to-the-last-shell-prompt-maybe)
+       (call-interactively 'evil-paste-after)
+     )
 
      ;;Go to the end of buffer to input when point is before the prompt.
      (defun w/go-to-the-last-shell-prompt-maybe ()
@@ -455,6 +464,8 @@
 ** Clipboard config
   #+BEGIN_SRC emacs-lisp
     (osx-clipboard-mode +1)
+    (setq x-select-enable-clipboard t)
+    (setq x-select-enable-primary t)
   #+END_SRC
 ** Setup theme config
    #+BEGIN_SRC emacs-lisp
