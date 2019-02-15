@@ -460,6 +460,31 @@
 
      (with-eval-after-load "comint"
        (define-key shell-mode-map [remap comint-send-input] 'w/my-comint-send-input-maybe))
+
+     ;;ansi-term for tmux server
+     (eval-after-load "term"
+       '(progn
+          (general-define-key
+           :states '(insert)
+           :keymaps 'term-raw-map
+           "C-y c" '((lambda () (interactive) (term-send-raw-string "\C-yc")) :which-key "_")
+           "C-y d" '((lambda () (interactive) (term-send-raw-string "\C-yd")) :which-key "_")
+           "C-y x" '((lambda () (interactive) (term-send-raw-string "\C-yx")) :which-key "_")
+           "C-y s" '((lambda () (interactive) (term-send-raw-string "\C-ys")) :which-key "_")
+           "C-y $" '((lambda () (interactive) (term-send-raw-string "\C-y$")) :which-key "_")
+           "C-y n" '((lambda () (interactive) (term-send-raw-string "\C-yn")) :which-key "_")
+           "C-y p" '((lambda () (interactive) (term-send-raw-string "\C-yp")) :which-key "_")
+           "j" '((lambda () (interactive) (term-send-raw-string "j")) :which-key "_")
+           "k" '((lambda () (interactive) (term-send-raw-string "k")) :which-key "_")
+           "C-y 1" '((lambda () (interactive) (term-send-raw-string "\C-y1")) :which-key "_")
+           "C-y 2" '((lambda () (interactive) (term-send-raw-string "\C-y2")) :which-key "_")
+           "C-y 3" '((lambda () (interactive) (term-send-raw-string "\C-y3")) :which-key "_")
+           "C-y 4" '((lambda () (interactive) (term-send-raw-string "\C-y4")) :which-key "_")
+           "<backspace>" '((lambda () (interactive) (term-send-raw-string "\C-h")) :which-key "_")
+           "y" '((lambda () (interactive) (term-send-raw-string "y")) :which-key "_")
+           "n" '((lambda () (interactive) (term-send-raw-string "n")) :which-key "_")
+           )))
+
    #+END_SRC
 ** Clipboard config
   #+BEGIN_SRC emacs-lisp
