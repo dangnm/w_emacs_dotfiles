@@ -744,7 +744,10 @@
 
      ;Only init flycheck when saving
      (add-hook 'after-save-hook 'force-my-flycheck-enable-first-time)
-
+     (add-hook 'ruby-mode-hook
+               (lambda ()
+                 (setq flycheck-disabled-checkers '(ruby-reek))
+                 ))
    #+END_SRC
 
 ** Auto complete config
