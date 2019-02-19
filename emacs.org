@@ -13,6 +13,7 @@
 - [[#my-search-configs][My search configs]]
   - [[#helm-config][Helm config]]
   - [[#neotree-config][Neotree config]]
+  - [[#fzf-search-config][Fzf search config]]
 - [[#my-edit-tools-configs][My edit tools configs]]
   - [[#flycheck-config][Flycheck config]]
   - [[#auto-complete-config][Auto complete config]]
