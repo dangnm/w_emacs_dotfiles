@@ -108,6 +108,8 @@
 ** Evil config
    #+BEGIN_SRC emacs-lisp
      (setq evil-want-C-u-scroll t)
+     (setq w/main-leader-key "SPC")
+     (setq w/secondary-leader-key ",")
 
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;; Evil
@@ -233,7 +235,7 @@
                "xdw" ''delete-trailing-whitespace
                ))
 
-       (w/map-main-leader-key "SPC")
+       (w/map-main-leader-key w/main-leader-key)
        ;;Mapping for ruby mode
        (defun w/remap-ruby-mode-leader-key ()
          (interactive)
@@ -242,7 +244,7 @@
        (add-hook 'ruby-mode-hook 'w/remap-ruby-mode-leader-key)
        (general-define-key
         :states '(normal visual insert emacs)
-        :prefix ","
+        :prefix w/secondary-leader-key
         :non-normal-prefix "M-n"
         :keymaps 'ruby-mode-map
         "i" '(:ignore t :which-key "inf")
@@ -260,7 +262,7 @@
        (add-hook 'dired-hook 'w/remap-dired-mode-leader-key)
        (general-define-key
         :states '(normal visual insert emacs)
-        :prefix ","
+        :prefix w/secondary-leader-key
         :non-normal-prefix "M-n"
         :keymaps 'dired-mode-map
         "," 'dired-up-directory
@@ -673,6 +675,23 @@
                 (neotree-find file-name))))))
    #+END_SRC
 
+** Fzf search config
+   #+BEGIN_SRC emacs-lisp
+     (setq fzf-path (format "%s/packages/fzf.el" w-dotfiles-folder-path))
+     (use-package fzf
+       :commands fzf
+       :load-path fzf-path)
+
+     (general-define-key
+      :states '(normal visual insert emacs)
+      :prefix w/main-leader-key
+      :keymaps 'override
+      :non-normal-prefix "M-n"
+      "s" '(:ignore t :which-key "search/symbol")
+      "sz" '(:ignore t :which-key "fzf search")
+      "szf" '(fzf :which-key "files")
+      )
+   #+END_SRC
 * My edit tools configs
 ** Flycheck config
    #+BEGIN_SRC emacs-lisp
