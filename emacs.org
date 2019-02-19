@@ -56,6 +56,16 @@
               (kill-new file-name))
           (error "Buffer not visiting a file"))))
 
+    (defun w/show-buffer-project-path ()
+      "Show the full path to the current project in the minibuffer."
+      (interactive)
+      (let ((project-path (projectile-project-root)))
+        (if project-path
+            (progn
+              (message project-path)
+              (kill-new project-path))
+          (error "Buffer not visiting a project"))))
+
     (defun s/show-buffer-file-name ()
       "Show the full path to the current file in the minibuffer."
       (interactive)
@@ -148,6 +158,7 @@
                "pr" ''projectile-recentf
                "pI" ''projectile-invalidate-cache
                "pp" ''w/projectile-switch-project
+               "py" ''w/show-buffer-project-path
                                              ;Search
                "s" '(list ':ignore t ':which-key "search/symbol")
                "sf" ''helm-do-ag
