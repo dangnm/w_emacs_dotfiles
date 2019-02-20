@@ -7,6 +7,7 @@
   - [[#evil-config][Evil config]]
   - [[#which-key-config][Which key config]]
   - [[#shell-config][Shell config]]
+  - [[#frame-config][Frame config]]
   - [[#clipboard-config][Clipboard config]]
   - [[#setup-theme-config][Setup theme config]]
   - [[#setup-editor-config][Setup editor config]]
@@ -241,6 +242,7 @@
                "wF" ''make-frame
                "wo" ''other-frame
                "wO" ''select-frame-number
+               "w C-m" ''toggle-frame-maximized
                                              ;Text
                "x" '(list ':ignore t ':which-key "text")
                "xU" ''upcase-region
