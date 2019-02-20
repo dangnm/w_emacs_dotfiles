@@ -823,9 +823,44 @@
    - Use "C-p" to go to the previous match
    - Use "g r u" to undo all cursors
    #+BEGIN_SRC emacs-lisp
+     (defun w/evil-mc-column-number-at-pos (pos)
+       "Analog to line-number-at-pos."
+       (save-excursion (goto-char pos) (current-column)))
+
+     (defun w/evil-mc-pos-at-line-column (line column)
+       (save-excursion (goto-line line) (move-to-column column) (point)))
+
+     (defun w/evil-mc-make-cursor-at-visual-region ()
+       (interactive)
+       (let ((row-count (- (line-number-at-pos (region-end)) (line-number-at-pos (region-beginning))))
+             (inc-var 1)
+             (first-line (line-number-at-pos (region-beginning)))
+             (current-line (line-number-at-pos (point)))
+             (current-column (w/evil-mc-column-number-at-pos (point))))
+         (normal-mode)
+         (global-evil-mc-mode +1)
+         (evil-mc-run-cursors-before)
+         (while (< inc-var (+ row-count 1))
+           (if (eq first-line current-line)
+               (evil-mc-make-cursor-at-pos (w/evil-mc-pos-at-line-column (+ (line-number-at-pos (point)) inc-var)
+                                                                 current-column)
+                                           )
+             (evil-mc-make-cursor-at-pos (w/evil-mc-pos-at-line-column (- (line-number-at-pos (point)) inc-var)
+                                                               (- current-column 1))
+                                         )
+             )
+           (setq inc-var (+ inc-var 1))
+           )
+         (if (not(eq first-line current-line))
+             (move-to-column (- current-column 1))
+           )
+         )
+       )
+
      (general-define-key
       :states '(visual)
       "g r f" 'evil-mc-make-and-goto-first-cursor
+      "g r v" '((lambda () (interactive) (w/evil-mc-make-cursor-at-visual-region)) :which-key "make cursors vertically")
       )
 
      (use-package evil-mc
