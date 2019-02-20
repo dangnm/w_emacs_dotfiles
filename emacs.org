@@ -238,6 +238,9 @@
                "wk" ''evil-window-up
                "wh" ''evil-window-left
                "wl" ''evil-window-right
+               "wF" ''make-frame
+               "wo" ''other-frame
+               "wO" ''select-frame-number
                                              ;Text
                "x" '(list ':ignore t ':which-key "text")
                "xU" ''upcase-region
@@ -499,6 +502,87 @@
            "n" '((lambda () (interactive) (term-send-raw-string "n")) :which-key "_")
            )))
 
+   #+END_SRC
+** Frame config
+   - Frame configs to support switching workspace
+   #+BEGIN_SRC emacs-lisp
+     (defface frame-number-face
+       '((t (:background "black" :foreground "red" )))
+       "Face for `frame-number-face`."
+       :group 'frame-fn)
+
+     (defface frame-name-face
+       '((t ( :background "black" :foreground "ForestGreen")))
+       "Face for `frame-name-face`."
+       :group 'frame-fn)
+
+     (defun select-frame-number ()
+       "Select a frame by number -- a maximum of 9 frames are supported."
+       (interactive)
+       (let* (
+              choice
+              chosen-frame
+              (n 0)
+              (frame-list (frame-list))
+              (total-frames (safe-length frame-list))
+              (frame-name-list
+               (mapcar
+                (lambda (frame) (cons frame (frame-parameter frame 'name)))
+                frame-list))
+              (frame-name-list-sorted
+               (sort
+                frame-name-list
+                #'(lambda (x y) (string< (cdr x) (cdr y)))))
+              (frame-number-list
+               (mapcar
+                (lambda (frame)
+                  (setq n (1+ n))
+                  (cons n (cdr frame)))
+                frame-name-list-sorted))
+              (pretty-list
+               (mapconcat 'identity
+                          (mapcar
+                           (lambda (x) (concat
+                                        "["
+                                        (propertize (format "%s" (car x)) 'face 'frame-number-face)
+                                        "] "
+                                        (propertize (format "%s" (cdr x)) 'face 'frame-name-face)))
+                           frame-number-list)
+                          " | "))  )
+         (message "%s" pretty-list)
+         (setq choice (read-char-exclusive))
+         (cond
+          ((eq choice ?1)
+           (setq choice 1))
+          ((eq choice ?2)
+           (setq choice 2))
+          ((eq choice ?3)
+           (setq choice 3))
+          ((eq choice ?4)
+           (setq choice 4))
+          ((eq choice ?5)
+           (setq choice 5))
+          ((eq choice ?6)
+           (setq choice 6))
+          ((eq choice ?7)
+           (setq choice 7))
+          ((eq choice ?8)
+           (setq choice 8))
+          ((eq choice ?9)
+           (setq choice 9))
+          (t
+           (setq choice 10)))
+         (setq chosen-frame (car (nth (1- choice) frame-name-list-sorted)))
+         (when (> choice total-frames)
+           (let* (
+                  (debug-on-quit nil)
+                  (quit-message
+                   (format "You must select a number between 1 and %s." total-frames)))
+             (signal 'quit `(,quit-message ))))
+         (select-frame chosen-frame)
+         (raise-frame chosen-frame)
+         chosen-frame)
+       )
    #+END_SRC
 ** Clipboard config
   #+BEGIN_SRC emacs-lisp
