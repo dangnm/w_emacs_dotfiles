@@ -508,6 +508,15 @@
 ** Frame config
    - Frame configs to support switching workspace
    #+BEGIN_SRC emacs-lisp
+     ;; Projectile project name as frame title
+     (setq frame-title-format
+           '(""
+             "%b"
+             (:eval
+              (let ((project-name (projectile-project-name)))
+                (unless (string= "-" project-name)
+                  (format " in [%s]" project-name))))))
+
      (defface frame-number-face
        '((t (:background "black" :foreground "red" )))
        "Face for `frame-number-face`."
