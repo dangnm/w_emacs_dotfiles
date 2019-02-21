@@ -12,8 +12,13 @@
 ## Install ag search
     brew install ag
 
+## Install fzf search
+    $ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf 
+    $ ~/.fzf/install
+
 ## Install dotfiles
     git clone git@github.com:dangnm/w_emacs_dotfiles.git
+
 ## Setup Emacs dotfiles
     Run sh ~/w_emacs_dotfiles/link.sh to toggle
     OR
