@@ -1,13 +1,5 @@
 # Emacs-dotfiles
 
-## Update brew (optional)
-    # Clean out any previously downloaded source files
-    $ brew cleanup
-    # Check your brew installation is OK
-    $ brew doctor
-    # Update brew
-    $ brew update 
-    $ brew upgrade
 ## Install Emacs
     # Uninstall old emacs
     $ brew uninstall emacs
@@ -69,4 +61,12 @@ em stop
 ## More plugins
 Check https://github.com/emacs-tw/awesome-emacs
 
-
+## Update brew (optional)
+    # IMPORTANT: use bellow commands carefully and make sure you know what you're doing
+    # Clean out any previously downloaded source files
+    $ brew cleanup
+    # Check your brew installation is OK
+    $ brew doctor
+    # Update brew
+    $ brew update 
+    $ brew upgrade
