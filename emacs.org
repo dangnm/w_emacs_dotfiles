@@ -160,6 +160,7 @@
                "pI" ''projectile-invalidate-cache
                "pp" ''w/projectile-switch-project
                "py" ''w/show-buffer-project-path
+               "pl" ''w/ivy-persp-switch-project
                                              ;Search
                "s" '(list ':ignore t ':which-key "search/symbol")
                "sf" ''helm-do-ag
@@ -682,58 +683,66 @@
 * My search configs
 ** Helm config
    #+BEGIN_SRC emacs-lisp
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; Helm
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (use-package helm-projectile
-      :commands (helm-projectile-configs-load helm-mode helm-projectile-find-file projectile-switch-project)
-      :config
-      (defun helm-projectile-configs-load ()
-        t)
-      (run-with-timer 3 nil
-                      (lambda ()
-                        (message "Loading helm configs...")))
-      (require 'helm-projectile)
-      (helm-projectile-on)
-      (projectile-mode +1)
-      (setq projectile-enable-caching t)
-      (add-to-list 'exec-path "/usr/local/bin/") ;;Path for running ag ...
-      (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
-      (load "my-helm-clear-projectile-cache-config")
-      ;;Using ESC (ctrl+G) to quit helm command
-      (with-eval-after-load "helm-command"
-        (define-key helm-M-x-map (kbd "ESC") 'helm-keyboard-quit)
-        )
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; Helm
+     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (use-package helm-projectile
+       :commands (helm-projectile-configs-load helm-mode helm-projectile-find-file projectile-switch-project)
+       :config
+       (defun helm-projectile-configs-load ()
+         t)
+       (run-with-timer 3 nil
+                       (lambda ()
+                         (message "Loading helm configs...")))
+       (require 'helm-projectile)
+       (helm-projectile-on)
+       (projectile-mode +1)
+       (setq projectile-enable-caching t)
+       (add-to-list 'exec-path "/usr/local/bin/") ;;Path for running ag ...
+       (global-set-key (kbd "<escape>")      'keyboard-escape-quit)
+       (load "my-helm-clear-projectile-cache-config")
+       ;;Using ESC (ctrl+G) to quit helm command
+       (with-eval-after-load "helm-command"
+         (define-key helm-M-x-map (kbd "ESC") 'helm-keyboard-quit)
+         )
 
-      (add-hook 'helm-after-initialize-hook
-                (lambda()
-                  (define-key helm-map (kbd "C-j") 'helm-next-line)
-                  (define-key helm-map (kbd "C-k") 'helm-previous-line)))
-      )
+       (add-hook 'helm-after-initialize-hook
+                 (lambda()
+                   (define-key helm-map (kbd "C-j") 'helm-next-line)
+                   (define-key helm-map (kbd "C-k") 'helm-previous-line)))
+       )
 
-    (defun w/projectile-switch-project ()
-      (interactive)
-      (helm-projectile-configs-load)
-      (helm-projectile-switch-project)
-      )
 
-    (defun w/projectile-dired ()
-      (interactive)
-      (helm-projectile-configs-load)
-      (projectile-dired)
-      )
+     (defun w/persp-helm-mini ()
+       "As `helm-mini' but restricts visible buffers by perspective."
+       (interactive)
+       (with-persp-buffer-list ()
+                               (helm-mini)))
 
-    (defun w/helm-M-x ()
-      (interactive)
-      (helm-projectile-configs-load)
-      (call-interactively 'helm-M-x)
-      )
+     (defun w/projectile-switch-project ()
+       (interactive)
+       (helm-projectile-configs-load)
+       (helm-projectile-switch-project)
+       )
 
-    (defun w/helm-mini ()
-      (interactive)
-      (helm-projectile-configs-load)
-      (call-interactively 'helm-mini)
-      )
+     (defun w/projectile-dired ()
+       (interactive)
+       (helm-projectile-configs-load)
+       (projectile-dired)
+       )
+
+     (defun w/helm-M-x ()
+       (interactive)
+       (helm-projectile-configs-load)
+       (call-interactively 'helm-M-x)
+       )
+
+     (defun w/helm-mini ()
+       (interactive)
+       (helm-projectile-configs-load)
+       (persp-mode)
+       (call-interactively 'w/persp-helm-mini)
+       )
    #+END_SRC
 
 ** Neotree config
@@ -1088,6 +1097,27 @@
 ** workspace(PERSP MODE) config
    save/recover sessions
    #+BEGIN_SRC emacs-lisp
+     (defun w/ivy-persp-switch-project (arg)
+       (interactive "P")
+       (persp-mode)
+       (helm-projectile-configs-load)
+       (ivy-mode)
+       (define-key ivy-minibuffer-map (kbd "C-j") 'ivy-next-line)
+       (define-key ivy-minibuffer-map (kbd "C-k") 'ivy-previous-line)
+       (ivy-read "Switch to Project Perspective: "
+                 (if (projectile-project-p)
+                     (cons (abbreviate-file-name (projectile-project-root))
+                           (projectile-relevant-known-projects))
+                   projectile-known-projects)
+                 :action (lambda (project)
+                           (let* ((persp-reset-windows-on-nil-window-conf t)
+                                  (exists (persp-with-name-exists-p project)))
+                             (persp-switch project)
+                             (unless exists
+                               (progn
+                                 (let ((projectile-completion-system 'ivy))
+                                   (projectile-switch-project-by-name project))))))))
+
      ;; perspectives for emacs
      (defun w/persp-load-state-from-file ()
        (interactive)
