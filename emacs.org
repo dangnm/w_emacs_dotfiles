@@ -155,6 +155,7 @@
                "pf" ''helm-projectile-find-file
                "pg" ''find-my-tag
                "pG" ''projectile-regenerate-tags
+               "pC" ''((lambda () (interactive) (projectile-invalidate-cache nil)) :which-key "invalidate cache")
                "pD" ''w/projectile-dired
                "pr" ''projectile-recentf
                "pI" ''projectile-invalidate-cache
