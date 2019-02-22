@@ -155,7 +155,6 @@
                "pf" ''helm-projectile-find-file
                "pg" ''find-my-tag
                "pG" ''projectile-regenerate-tags
-               "pC" ''((lambda () (interactive) (projectile-invalidate-cache nil)) :which-key "invalidate cache")
                "pD" ''w/projectile-dired
                "pr" ''projectile-recentf
                "pI" ''projectile-invalidate-cache
@@ -611,6 +610,8 @@
    #+END_SRC
 ** Setup editor config
    #+BEGIN_SRC emacs-lisp
+     ;;Only type y instead of yes
+     (defalias 'yes-or-no-p 'y-or-n-p)
      ;;Disable auto line wrapping
      (set-default 'truncate-lines t)
      ;; Theme colors for shell
