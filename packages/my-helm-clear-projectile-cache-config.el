@@ -76,8 +76,6 @@
                   )
                 (format "Async: %s" my-saved-launch-directory)
                 )
-              (lambda (result)
-                (message "Reload projectile cache async: %s" result)
-                ))
+              )
               'ignore
             ))
