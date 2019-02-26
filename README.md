@@ -27,6 +27,11 @@
 ## Restore default Emacs (optional)
     Run sh ~/w_emacs_dotfiles/link.sh to toggle
 
+## Update melpa package list
+    # In case you have a problem with install packages.
+    # In emacs, run the following command.
+    $ M-x package-refresh-contents
+
 ## Run Emacs in 0.1s
 ### Easy way
 To install the script: chmod +x install_em.sh && ./install_em.sh

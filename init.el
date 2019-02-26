@@ -60,6 +60,10 @@
                       rbenv ; ruby env
                       inf-ruby ; ruby irb
                       ;========================================================
+                      ; Package: JS tools
+                      ;========================================================
+                      add-node-modules-path
+                      ;========================================================
                       ; Package: Workspace tools
                       ;========================================================
                       persp-mode ;perspectives for emacs, save/recover sessions

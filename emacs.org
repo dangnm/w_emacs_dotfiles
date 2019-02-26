@@ -28,6 +28,7 @@
   - [[#workspacepersp-mode-config][workspace(PERSP MODE) config]]
   - [[#org-mode-config][org mode config]]
   - [[#ruby-mode-config][ruby mode config]]
+  - [[#js-config][js config]]
 #+END_QUOTE
 
 * Introduction
@@ -1190,4 +1191,56 @@
        )
 
      (add-hook 'ruby-mode-hook 'ruby-test-mode)
+   #+END_SRC
+** js config
+   #+BEGIN_SRC emacs-lisp
+     (use-package js2-mode
+       :ensure t
+       :defer t
+       :mode (("\\.m?js\\'"  . js2-mode))
+       :init
+       (setq-default
+        js2-basic-offset 2
+        js-indent-level 2)
+       (setq js2-mode-show-parse-errors nil)
+       (setq js2-mode-show-strict-warnings nil)
+       :config
+       (add-hook 'js2-mode #'turn-on-evil-matchit-mode)
+       (add-hook 'js2-init-hook
+                 '(lambda ()
+                    (setq next-error-function 'flycheck-next-error)
+                    )))
+
+     (use-package add-node-modules-path
+       :ensure t
+       :after js2-mode
+       :config
+       (add-hook 'js2-mode-hook #'add-node-modules-path))
+
+     (use-package prettier-js
+       :ensure t
+       :after js2-mode
+       :config
+       (add-hook 'js2-mode-hook #'prettier-js-mode)
+       (add-hook 'web-mode-hook #'prettier-js-mode))
+
+     (use-package import-js
+       :ensure t
+       :after js2-mode)
+
+     (use-package rjsx-mode
+       :ensure t
+       :after js2-mode
+       :init
+       ;; enable rjsx mode by using magic-mode-alist
+       (defun +javascript-jsx-file-p ()
+         (and buffer-file-name
+              (or (equal (file-name-extension buffer-file-name) "js")
+                  (equal (file-name-extension buffer-file-name) "jsx"))
+              (re-search-forward "\\(^\\s-*import React\\|\\( from \\|require(\\)[\"']react\\)"
+                                 magic-mode-regexp-match-limit t)
+              (progn (goto-char (match-beginning 1))
+                     (not (sp-point-in-string-or-comment)))))
+
+       (add-to-list 'magic-mode-alist (cons #'+javascript-jsx-file-p 'rjsx-mode)))
    #+END_SRC
