@@ -19,6 +19,7 @@
                       which-key ;key leader guide 
                       async ;asynchronous processing in Emacs
                       use-package ;package manager
+                      exec-path-from-shell
                       ;========================================================
                       ; Package: Search
                       ;========================================================

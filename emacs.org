@@ -611,6 +611,9 @@
    #+END_SRC
 ** Setup editor config
    #+BEGIN_SRC emacs-lisp
+     ;;ensure environment variables inside Emacs look the same as in the user's shell
+     (when (memq window-system '(mac ns x))
+       (exec-path-from-shell-initialize))
      ;;Only type y instead of yes
      (defalias 'yes-or-no-p 'y-or-n-p)
      ;;Disable auto line wrapping
