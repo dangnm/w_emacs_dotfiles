@@ -1244,3 +1244,12 @@
 
        (add-to-list 'magic-mode-alist (cons #'+javascript-jsx-file-p 'rjsx-mode)))
    #+END_SRC
+
+** Reason mode config
+   - Reason mode for reason react development
+   #+BEGIN_SRC emacs-lisp
+     (use-package reason-mode
+       :ensure t
+       :defer t
+       )
+   #+END_SRC
