@@ -124,9 +124,9 @@
      (setq w/main-leader-key "SPC")
      (setq w/secondary-leader-key ",")
 
-     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+               ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;; Evil
-     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+               ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
      (use-package general
        :config
@@ -160,7 +160,7 @@
                "pr" ''projectile-recentf
                "pI" ''projectile-invalidate-cache
                "pp" ''w/projectile-switch-project
-               "py" ''w/show-buffer-project-path
+
                "pl" ''w/ivy-persp-switch-project
                                              ;Search
                "s" '(list ':ignore t ':which-key "search/symbol")
@@ -231,6 +231,9 @@
                "rw" ''window-configuration-to-register
                                              ;Windows
                "w" '(list ':ignore t ':which-key "windows")
+               "w=" ''balance-windows
+               "wr" ''w/rotate-windows-forward
+               "wR" ''w/rotate-windows-backward
                "w/" ''split-window-right
                "w-" ''split-window-below
                "wv" ''split-window-right
@@ -336,6 +339,32 @@
        (with-eval-after-load "evil"
          (define-key evil-visual-state-map "gc" 'evilnc-comment-or-uncomment-lines)
          ))
+
+
+     ;;Rotate windows
+
+     (defun w/rotate-windows-forward (count)
+       "Rotate each window forwards.
+          A negative prefix argument rotates each window backwards.
+          Dedicated (locked) windows are left untouched."
+       (interactive "p")
+       (let* ((non-dedicated-windows (cl-remove-if 'window-dedicated-p (window-list)))
+              (states (mapcar #'window-state-get non-dedicated-windows))
+              (num-windows (length non-dedicated-windows))
+              (step (+ num-windows count)))
+         (if (< num-windows 2)
+             (error "You can't rotate a single window!")
+           (dotimes (i num-windows)
+             (window-state-put
+              (elt states i)
+              (elt non-dedicated-windows (% (+ step i) num-windows)))))))
+
+     (defun w/rotate-windows-backward (count)
+       "Rotate each window backwards.
+          Dedicated (locked) windows are left untouched."
+       (interactive "p")
+       (w/rotate-windows-forward (* -1 count)))
+
 
      ;; from https://gist.github.com/3402786
      (defun toggle-maximize-buffer ()
