@@ -160,7 +160,6 @@
                "pr" ''projectile-recentf
                "pI" ''projectile-invalidate-cache
                "pp" ''w/projectile-switch-project
-
                "py" ''w/show-buffer-project-path
                "pl" ''w/ivy-persp-switch-project
                                              ;Search
@@ -629,9 +628,13 @@
    #+END_SRC
 ** Clipboard config
   #+BEGIN_SRC emacs-lisp
-    (osx-clipboard-mode +1)
-    (setq x-select-enable-clipboard t)
-    (setq x-select-enable-primary t)
+    (if (not(display-graphic-p))
+        (progn
+          (osx-clipboard-mode +1)
+          (setq x-select-enable-clipboard t)
+          (setq x-select-enable-primary t)
+          )
+      )
   #+END_SRC
 ** Setup theme config
    #+BEGIN_SRC emacs-lisp
@@ -1227,7 +1230,9 @@
      (use-package js2-mode
        :ensure t
        :defer t
-       :mode (("\\.m?js\\'"  . js2-mode))
+       :mode (("\\.m?js\\'"  . js2-mode)
+              ("\\.jsx\\'"       . js2-mode)
+              )
        :init
        (setq-default
         js2-basic-offset 2
