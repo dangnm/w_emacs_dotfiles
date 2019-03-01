@@ -161,6 +161,7 @@
                "pI" ''projectile-invalidate-cache
                "pp" ''w/projectile-switch-project
 
+               "py" ''w/show-buffer-project-path
                "pl" ''w/ivy-persp-switch-project
                                              ;Search
                "s" '(list ':ignore t ':which-key "search/symbol")
