@@ -544,9 +544,11 @@
            '(""
              "%b"
              (:eval
-              (let ((project-name (projectile-project-name)))
+              (let ((project-name (projectile-project-name))
+                    (persp-name (safe-persp-name (get-current-persp)))
+                    )
                 (unless (string= "-" project-name)
-                  (format " in [%s]" project-name))))))
+                  (format " in [%s] - persp [%s]" project-name persp-name))))))
 
      (defface frame-number-face
        '((t (:background "black" :foreground "red" )))
