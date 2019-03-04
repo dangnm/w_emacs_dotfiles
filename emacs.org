@@ -29,6 +29,7 @@
   - [[#org-mode-config][org mode config]]
   - [[#ruby-mode-config][ruby mode config]]
   - [[#js-config][js config]]
+  - [[#reason-mode-config][Reason mode config]]
 #+END_QUOTE
 
 * Introduction
@@ -931,37 +932,43 @@
 
 ** Auto complete config
    #+BEGIN_SRC emacs-lisp
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; Auto Complete
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    (use-package auto-complete
-      :commands auto-complete-mode
-      :init 
-      (progn
-        (auto-complete-mode t))
-      :bind (("C-n" . ac-next)
-             ("C-p" . ac-previous))
-      :config
-      (use-package auto-complete-config)
-      (ac-config-default)
-      (setq ac-delay 0.02)
-      (setq ac-use-menu-map t)
-      (setq ac-use-quick-help nil) 
-      (setq ac-ignore-case nil)
-      (setq ac-dwim  t)
-      (setq ac-fuzzy-enable t)
-      (setq ac-ignore-case t
-            ac-use-fuzzy t
-            ac-auto-start 0
-            ac-auto-show-menu 2.1
-            ac-expand-on-auto-complete nil)
-      ;;Auto-completion complete key mapping
-      (define-key ac-completing-map (kbd "C-l") 'ac-complete)
-      ;;Trigger auto complete menu
-      (with-eval-after-load "evil"
-        (define-key evil-insert-state-map (kbd "C-f") 'auto-complete)
-        )
-      )
+       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     ;; Auto Complete
+       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (use-package company               
+       :ensure t
+       :defer t
+       :init (global-company-mode)
+       )
+
+     (use-package auto-complete
+       :commands auto-complete-mode
+       :init 
+       (progn
+         (auto-complete-mode t))
+       :bind (("C-n" . ac-next)
+              ("C-p" . ac-previous))
+       :config
+       (use-package auto-complete-config)
+       (ac-config-default)
+       (setq ac-delay 0.02)
+       (setq ac-use-menu-map t)
+       (setq ac-use-quick-help nil) 
+       (setq ac-ignore-case nil)
+       (setq ac-dwim  t)
+       (setq ac-fuzzy-enable t)
+       (setq ac-ignore-case t
+             ac-use-fuzzy t
+             ac-auto-start 0
+             ac-auto-show-menu 2.1
+             ac-expand-on-auto-complete nil)
+       ;;Auto-completion complete key mapping
+       (define-key ac-completing-map (kbd "C-l") 'ac-complete)
+       ;;Trigger auto complete menu
+       (with-eval-after-load "evil"
+         (define-key evil-insert-state-map (kbd "C-f") 'auto-complete)
+         )
+       )
    #+END_SRC
 
 ** Multi cursors config
@@ -1283,10 +1290,46 @@
    #+END_SRC
 
 ** Reason mode config
-   - Reason mode for reason react development
+*** reasonml lang server config
+   - Reason mode for reason react development 🐫
+   - To make this config work, you must:
+   1. *Run* ~ln -sf ~/w_emacs_dotfiles/reasonml/bin/reason-language-server /usr/local/bin~
    #+BEGIN_SRC emacs-lisp
+     (use-package lsp-mode
+       :ensure t
+       :init
+       (add-hook 'prog-major-mode #'lsp-prog-major-mode-enable)
+       :config
+       (setq lsp-prefer-flymake nil
+             lsp-auto-guess-root t
+             lsp-keep-workspace-alive nil)
+       (ht-set! lsp--default-notification-handlers "client/registerCapability" 'ignore)
+       (lsp-register-client
+        (make-lsp-client :new-connection (lsp-stdio-connection
+                                          (-const "reason-language-server"))
+                         :major-modes '(reason-mode)
+                         :priority -1
+                         :server-id 'reason-ls))
+       (setq lsp-eldoc-render-all t))
+
+     (use-package company-lsp
+       :ensure t
+       :init
+       (push 'company-lsp company-backends))
+
+     (use-package lsp-ui
+       :ensure t
+       :init
+       (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+       :config
+       (setq lsp-ui-sideline-show-hover nil)
+       (setq lsp-ui-doc-enable nil)
+       )
+
      (use-package reason-mode
        :ensure t
-       :defer t
-       )
+       :config
+       (add-hook 'reason-mode-hook #'lsp)
+       (add-hook 'reason-mode-hook (lambda ()
+                                     (add-hook 'before-save-hook #'lsp-format-buffer nil t))))
    #+END_SRC
