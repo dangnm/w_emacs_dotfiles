@@ -1220,9 +1220,7 @@
      (use-package js2-mode
        :ensure t
        :defer t
-       :mode (("\\.m?js\\'"  . js2-mode)
-              ("\\.jsx\\'"       . js2-mode)
-              )
+       :mode (("\\.m?js\\'"  . js2-mode))
        :init
        (setq-default
         js2-basic-offset 2
@@ -1250,6 +1248,10 @@
        (add-hook 'web-mode-hook #'prettier-js-mode))
 
      (use-package import-js
+       :ensure t
+       :after js2-mode)
+       
+     (use-package smartparens
        :ensure t
        :after js2-mode)
 
