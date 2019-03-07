@@ -1088,6 +1088,24 @@
       "w" 'evil-forward-word-begin
       "b" 'evil-backward-word-begin
       )
+
+     ;; Show only the author toggle
+     (eval-after-load "vc-annotate"
+       '(defun vc-annotate-get-time-set-line-props ()
+          (let ((bol (point))
+                (date (vc-call-backend vc-annotate-backend 'annotate-time))
+                (inhibit-read-only t))
+            (assert (>= (point) bol))
+            (put-text-property bol (point) 'invisible 'vc-annotate-annotation)
+            (when (string-equal "Git" vc-annotate-backend)
+              (save-excursion
+                (goto-char bol)
+                (search-forward "(")
+                (let ((p1 (point)))
+                  (re-search-forward " [0-9]")
+                  (remove-text-properties p1 (1- (point)) '(invisible nil))
+                  )))
+            date)))
    #+END_SRC
 * My ui configs
 ** space line config
