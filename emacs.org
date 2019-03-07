@@ -21,6 +21,7 @@
   - [[#multi-cursors-config][Multi cursors config]]
 - [[#my-git-tools-config][My git tools config]]
   - [[#magit-config][Magit config]]
+  - [[#annotategit-blame][Annotate(Git blame)]]
 - [[#my-ui-configs][My ui configs]]
   - [[#space-line-config][space line config]]
   - [[#indent-guide-config][indent guide config]]
@@ -1072,6 +1073,22 @@
          (add-hook 'git-timemachine-mode-hook #'evil-normalize-keymaps)))
    #+END_SRC
 
+** Annotate(Git blame)
+   - Mapping evil bindings for git blame
+   #+BEGIN_SRC emacs-lisp
+     (general-define-key
+      :states '(normal visual insert emacs)
+      :keymaps 'vc-annotate-mode-map
+      "C-u" 'evil-scroll-up
+      "C-d" 'evil-scroll-down
+      "j" 'evil-next-visual-line
+      "k" 'evil-previous-visual-line
+      "h" 'evil-backward-char
+      "l" 'evil-forward-char
+      "w" 'evil-forward-word-begin
+      "b" 'evil-backward-word-begin
+      )
+   #+END_SRC
 * My ui configs
 ** space line config
    #+BEGIN_SRC emacs-lisp
