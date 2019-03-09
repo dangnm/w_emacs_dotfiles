@@ -201,6 +201,7 @@
                                              ;Git
                "g" '(list ':ignore t ':which-key "Git")
                "gb" ''magit-blame
+               "gB" ''vc-annotate
                "gm" ''magit-dispatch-popup
                "gt" ''git-timemachine
                "gs" ''magit-status
@@ -937,6 +938,24 @@
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;; Auto Complete
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     (use-package flx
+       :ensure t
+       :defer t
+       )
+
+     (use-package flx-ido
+       :ensure t
+       :defer t
+       )
+
+     (use-package company-flx
+       :ensure t
+       :commands (company-flx-mode)
+       :config
+       (setq company-flx-limit 50)
+       :init
+       (add-hook 'global-company-mode-hook 'company-flx-mode))
+
      (use-package company               
        :ensure t
        :defer t
@@ -946,11 +965,31 @@
        (define-key company-active-map (kbd "C-n") 'company-select-next)
        (define-key company-active-map (kbd "C-p") 'company-select-previous)
        (define-key company-active-map (kbd "C-l") 'company-complete)
+       (setq company-backends
+             '(company-bbdb company-nxml company-css company-eclim
+                            company-semantic company-xcode company-cmake
+                            company-capf
+                            (company-dabbrev-code company-gtags company-etags
+                                                  company-keywords)
+                            company-oddmuse company-files company-dabbrev))
+       (setq company-minimum-prefix-length 2
+             company-selection-wrap-around t
+             company-show-numbers t
+             company-tooltip-align-annotations t
+             company-dabbrev-downcase nil
+             company-dabbrev-code-everywhere t
+             company-dabbrev-ignore-case nil)
        ;;Trigger auto complete menu
        (with-eval-after-load "evil"
          (define-key evil-insert-state-map (kbd "C-f") 'company-show-location)
          )
        )
+
+
+     (with-eval-after-load 'company
+       (add-hook 'company-mode-hook (lambda ()
+                                      (add-to-list 'company-backends 'company-capf)))
+       (company-flx-mode +1))
    #+END_SRC
 
 ** Multi cursors config
