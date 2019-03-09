@@ -1402,7 +1402,10 @@
      (use-package company-lsp
        :ensure t
        :init
-       (push 'company-lsp company-backends))
+       (push 'company-lsp company-backends)
+       :config
+       (setq company-lsp-async t)
+       )
 
      (use-package lsp-ui
        :ensure t
