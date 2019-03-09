@@ -26,6 +26,7 @@
   - [[#space-line-config][space line config]]
   - [[#indent-guide-config][indent guide config]]
 - [[#other-tools-configs][Other tools configs]]
+  - [[#language-server-protocol-lsp-mode][language server protocol (lsp-mode)]]
   - [[#workspacepersp-mode-config][workspace(PERSP MODE) config]]
   - [[#org-mode-config][org mode config]]
   - [[#ruby-mode-config][ruby mode config]]
@@ -1209,6 +1210,41 @@
    #+END_SRC
 
 * Other tools configs
+** language server protocol (lsp-mode)
+   - LSP is what makes Emacs full featured IDE (code navigation & completion)
+   - Dependencies: company, company-lsp
+   - To run server manually: call ~(lsp)~
+   #+BEGIN_SRC emacs-lisp
+     (use-package lsp-mode
+       :ensure t
+       :init
+       (add-hook 'prog-major-mode #'lsp-prog-major-mode-enable)
+       :config
+       (setq lsp-prefer-flymake nil
+             lsp-auto-guess-root t
+             lsp-keep-workspace-alive nil)
+       (ht-set! lsp--default-notification-handlers "client/registerCapability" 'ignore)
+
+       (setq lsp-print-io t)
+       (setq lsp-eldoc-render-all t))
+
+     (use-package company-lsp
+       :ensure t
+       :init
+       (push 'company-lsp company-backends)
+       :config
+       (setq company-lsp-async t)
+       )
+
+     (use-package lsp-ui
+       :ensure t
+       :init
+       (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+       :config
+       (setq lsp-ui-sideline-show-hover nil)
+       (setq lsp-ui-doc-enable nil)
+       )
+   #+END_SRC
 ** workspace(PERSP MODE) config
    save/recover sessions
    #+BEGIN_SRC emacs-lisp
@@ -1305,6 +1341,7 @@
    #+END_SRC
 *** rope (code navigation & completion)
     - Robe mode is what makes Emacs full featured IDE
+    - Robe mode may confict with solargraph
     - Dependent packages: company.
     - Enable it by using ~M-x robe-start~ (~SPC SPC robe-start~)
     #+BEGIN_SRC emacs-lisp
@@ -1317,6 +1354,26 @@
           (add-hook 'ruby-mode-hook 'robe-mode)
           (with-eval-after-load 'company
             (add-to-list 'company-backends 'company-robe))))
+    #+END_SRC
+
+*** ruby language server protocol (solargraph) 
+    - Robe mode may confict with solargraph
+    - Dependencies: lsp-mode
+    - To make this config work, you must:
+    1. *Run* ~gem install solargraph~ in your ruby repo
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'ruby-mode-hook (lambda ()
+                                    (setq ruby-language-server-path (format "%s/ruby/bin/solargraph" w-dotfiles-folder-path))
+
+                                    (lsp-register-client
+                                     (make-lsp-client :new-connection (lsp-stdio-connection
+                                                                       (list ruby-language-server-path "stdio")
+                                                                       )
+                                                      :major-modes '(ruby-mode)
+                                                      :priority -1
+                                                      :server-id 'w-ruby-ls))
+                                    (lsp)
+                                    ))
     #+END_SRC
 ** js config
    #+BEGIN_SRC emacs-lisp
@@ -1377,49 +1434,25 @@
 
 ** Reason mode config
 *** reasonml lang server config
-   - Reason mode for reason react development 🐫
-   - To make this config work, you must:
-   1. *Run* ~ln -sf ~/w_emacs_dotfiles/reasonml/bin/reason-language-server /usr/local/bin~ and update reason-language-server-path to ~/usr/local/bin/reason-language-server-path~ if you don't use the whole dotfiles
+    - Reason mode for reason react development 🐫
+    - Dependencies: lsp-mode
+    - To make this config work, you must:
+    1. *Run* ~ln -sf ~/w_emacs_dotfiles/reasonml/bin/reason-language-server /usr/local/bin~ and update reason-language-server-path to ~/usr/local/bin/reason-language-server-path~ if you don't use the whole dotfiles
    #+BEGIN_SRC emacs-lisp
-     (use-package lsp-mode
-       :ensure t
-       :init
-       (add-hook 'prog-major-mode #'lsp-prog-major-mode-enable)
-       :config
-       (setq reason-language-server-path (format "%s/reasonml/bin/reason-language-server" w-dotfiles-folder-path))
-       (setq lsp-prefer-flymake nil
-             lsp-auto-guess-root t
-             lsp-keep-workspace-alive nil)
-       (ht-set! lsp--default-notification-handlers "client/registerCapability" 'ignore)
-       (lsp-register-client
-        (make-lsp-client :new-connection (lsp-stdio-connection
-                                          (-const reason-language-server-path))
-                         :major-modes '(reason-mode)
-                         :priority -1
-                         :server-id 'reason-ls))
-       (setq lsp-eldoc-render-all t))
-
-     (use-package company-lsp
-       :ensure t
-       :init
-       (push 'company-lsp company-backends)
-       :config
-       (setq company-lsp-async t)
-       )
-
-     (use-package lsp-ui
-       :ensure t
-       :init
-       (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-       :config
-       (setq lsp-ui-sideline-show-hover nil)
-       (setq lsp-ui-doc-enable nil)
-       )
 
      (use-package reason-mode
        :ensure t
        :config
-       (add-hook 'reason-mode-hook #'lsp)
+       (add-hook 'reason-mode-hook (lambda ()
+                                     (setq reason-language-server-path (format "%s/reasonml/bin/reason-language-server" w-dotfiles-folder-path))
+                                     (lsp-register-client
+                                      (make-lsp-client :new-connection (lsp-stdio-connection
+                                                                        (-const reason-language-server-path))
+                                                       :major-modes '(reason-mode)
+                                                       :priority -1
+                                                       :server-id 'w-reason-ls))
+                                     (lsp)
+                                     ))
        (add-hook 'reason-mode-hook (lambda ()
                                      (add-hook 'before-save-hook #'lsp-format-buffer nil t))))
    #+END_SRC
