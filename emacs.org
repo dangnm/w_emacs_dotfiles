@@ -1379,20 +1379,21 @@
 *** reasonml lang server config
    - Reason mode for reason react development 🐫
    - To make this config work, you must:
-   1. *Run* ~ln -sf ~/w_emacs_dotfiles/reasonml/bin/reason-language-server /usr/local/bin~
+   1. *Run* ~ln -sf ~/w_emacs_dotfiles/reasonml/bin/reason-language-server /usr/local/bin~ and update reason-language-server-path to ~/usr/local/bin/reason-language-server-path~ if you don't use the whole dotfiles
    #+BEGIN_SRC emacs-lisp
      (use-package lsp-mode
        :ensure t
        :init
        (add-hook 'prog-major-mode #'lsp-prog-major-mode-enable)
        :config
+       (setq reason-language-server-path (format "%s/reasonml/bin/reason-language-server" w-dotfiles-folder-path))
        (setq lsp-prefer-flymake nil
              lsp-auto-guess-root t
              lsp-keep-workspace-alive nil)
        (ht-set! lsp--default-notification-handlers "client/registerCapability" 'ignore)
        (lsp-register-client
         (make-lsp-client :new-connection (lsp-stdio-connection
-                                          (-const "reason-language-server"))
+                                          (-const reason-language-server-path))
                          :major-modes '(reason-mode)
                          :priority -1
                          :server-id 'reason-ls))
