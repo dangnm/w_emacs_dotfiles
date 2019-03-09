@@ -1306,12 +1306,11 @@
 *** rope (code navigation & completion)
     - Robe mode is what makes Emacs full featured IDE
     - Dependent packages: company.
-    - Enable it by using ~M-x robe-mode~ and ~M-x robe-start~
+    - Enable it by using ~M-x robe-start~ (~SPC SPC robe-start~)
     #+BEGIN_SRC emacs-lisp
       (use-package robe
         :defer t
         :ensure t
-        :disabled t
         :after ruby-mode
         :init
         (progn
