@@ -938,30 +938,12 @@
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;; Auto Complete
      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     (use-package flx
-       :ensure t
-       :defer t
-       )
-
-     (use-package flx-ido
-       :ensure t
-       :defer t
-       )
-
-     (use-package company-flx
-       :ensure t
-       :commands (company-flx-mode)
-       :config
-       (setq company-flx-limit 50)
-       :init
-       (add-hook 'global-company-mode-hook 'company-flx-mode))
-
      (use-package company               
        :ensure t
        :defer t
        :init (global-company-mode)
        :config
-       (setq company-idle-delay 0.5)
+       (setq company-idle-delay 1)
        (define-key company-active-map (kbd "C-n") 'company-select-next)
        (define-key company-active-map (kbd "C-p") 'company-select-previous)
        (define-key company-active-map (kbd "C-l") 'company-complete)
@@ -984,6 +966,29 @@
          (define-key evil-insert-state-map (kbd "C-f") 'company-show-location)
          )
        )
+   #+END_SRC
+
+** COMMENT Auto complete fuzzy config using company-flx
+   - For research. it's very slow
+   - Dependent packages: company, robe(for ruby)
+   #+BEGIN_SRC emacs-lisp
+     (use-package flx
+       :ensure t
+       :defer t
+       )
+
+     (use-package flx-ido
+       :ensure t
+       :defer t
+       )
+
+     (use-package company-flx
+       :ensure t
+       :commands (company-flx-mode)
+       :config
+       (setq company-flx-limit 5)
+       :init
+       (add-hook 'global-company-mode-hook 'company-flx-mode))
 
 
      (with-eval-after-load 'company
@@ -991,7 +996,6 @@
                                       (add-to-list 'company-backends 'company-capf)))
        (company-flx-mode +1))
    #+END_SRC
-
 ** Multi cursors config
    - Use "g r f" to make a cursor at selected text (visual mode)
    - Use "C-n" to go to the next match
@@ -1299,6 +1303,22 @@
 
      (add-hook 'ruby-mode-hook 'ruby-test-mode)
    #+END_SRC
+*** rope (code navigation & completion)
+    - Robe mode is what makes Emacs full featured IDE
+    - Dependent packages: company.
+    - Enable it by using ~M-x robe-mode~ and ~M-x robe-start~
+    #+BEGIN_SRC emacs-lisp
+      (use-package robe
+        :defer t
+        :ensure t
+        :disabled t
+        :after ruby-mode
+        :init
+        (progn
+          (add-hook 'ruby-mode-hook 'robe-mode)
+          (with-eval-after-load 'company
+            (add-to-list 'company-backends 'company-robe))))
+    #+END_SRC
 ** js config
    #+BEGIN_SRC emacs-lisp
      (use-package js2-mode
