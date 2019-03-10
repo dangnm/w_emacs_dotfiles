@@ -599,7 +599,9 @@
       :keymaps 'override
       :non-normal-prefix "M-n"
       "at" '(:ignore t :which-key "Terminal")
-      "atn" '(multi-libvterm :which-key "new")
+      "att" '(multi-libvterm :which-key "new")
+      "atn" '(multi-libvterm-next :which-key "term next")
+      "atp" '(multi-libvterm-prev :which-key "term previous")
       )
    #+END_SRC
 ** Frame config
