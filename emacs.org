@@ -751,6 +751,8 @@
 
        (add-hook 'helm-after-initialize-hook
                  (lambda()
+                   (define-key helm-map (kbd "C-u") 'helm-previous-page)
+                   (define-key helm-map (kbd "C-d") 'helm-next-page)
                    (define-key helm-map (kbd "C-j") 'helm-next-line)
                    (define-key helm-map (kbd "C-k") 'helm-previous-line)))
        )
