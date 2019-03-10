@@ -1374,6 +1374,9 @@
                                                       :major-modes '(ruby-mode)
                                                       :priority -1
                                                       :server-id 'w-ruby-ls))
+                                    (if (get-buffer-process "*w-ruby-ls*")
+                                        (lsp)
+                                      )
                                     ))
 
       ;;Mapping for ruby mode
