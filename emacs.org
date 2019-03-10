@@ -7,6 +7,7 @@
   - [[#evil-config][Evil config]]
   - [[#which-key-config][Which key config]]
   - [[#shell-config][Shell config]]
+  - [[#terminal-multi-libvterm-config][Terminal (multi-libvterm) config]]
   - [[#frame-config][Frame config]]
   - [[#clipboard-config][Clipboard config]]
   - [[#setup-theme-config][Setup theme config]]
@@ -539,6 +540,67 @@
            "n" '((lambda () (interactive) (term-send-raw-string "n")) :which-key "_")
            )))
 
+   #+END_SRC
+** Terminal (multi-libvterm) config
+   #+BEGIN_SRC emacs-lisp
+     (setq vterm-path (format "%s/packages/emacs-libvterm" w-dotfiles-folder-path))
+     (use-package vterm
+       :load-path vterm-path
+       :config
+       (setq vterm-keymap-exceptions nil)
+       (defvar bash-shortcuts '("C-e"
+                                "C-f"
+                                "C-a"
+                                "C-v"
+                                "C-b"
+                                "C-w"
+                                "C-u"
+                                "C-d"
+                                "C-n"
+                                "C-m"
+                                "C-p"
+                                "C-j"
+                                "C-k"
+                                "C-r"
+                                "C-t"
+                                "C-g"
+                                "C-SPC"
+                                "C-c"))
+
+       (cl-loop for key in bash-shortcuts
+                do (evil-declare-key 'insert vterm-mode-map (kbd key) 'vterm--self-insert))
+
+       (defun vterm-send-ctrl-j ()
+         "Sends enter to the libvterm."
+         (interactive)
+         (vterm-send-key "j" nil nil t))
+
+
+
+       (add-hook 'vterm-mode-hook
+                 (lambda ()
+                   (toggle-truncate-lines -1) ;;Enable auto line wrapping
+                   (evil-insert-state)))
+
+       (evil-declare-key 'normal vterm-mode-map (kbd ",c") #'multi-libvterm)
+       (evil-declare-key 'normal vterm-mode-map (kbd ",n") #'multi-libvterm-next)
+       (evil-declare-key 'normal vterm-mode-map (kbd ",p") #'multi-libvterm-prev)
+       (evil-declare-key 'normal vterm-mode-map (kbd "o") 'evil-insert-state)
+       )
+
+
+     (setq multi-libvterm-path (format "%s/packages/multi-libvterm.el" w-dotfiles-folder-path))
+     (use-package multi-libvterm
+       :load-path multi-libvterm-path)
+
+     (general-define-key
+      :states '(normal visual insert emacs)
+      :prefix w/main-leader-key
+      :keymaps 'override
+      :non-normal-prefix "M-n"
+      "at" '(:ignore t :which-key "Terminal")
+      "atn" '(multi-libvterm :which-key "new")
+      )
    #+END_SRC
 ** Frame config
    - Frame configs to support switching workspace
