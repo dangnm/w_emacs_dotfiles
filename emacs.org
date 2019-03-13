@@ -715,6 +715,8 @@
    #+END_SRC
 ** Setup editor config
    #+BEGIN_SRC emacs-lisp
+     ;; welcome screen splash image
+     (setq fancy-splash-image (format "%s/logo.png" w-dotfiles-folder-path))
      ;;ensure environment variables inside Emacs look the same as in the user's shell
      (when (memq window-system '(mac ns x))
        (exec-path-from-shell-initialize))
@@ -1429,19 +1431,20 @@
     1. *Run* ~gem install solargraph~ in your ruby repo
     #+BEGIN_SRC emacs-lisp
       (add-hook 'ruby-mode-hook (lambda ()
-                                    (setq ruby-language-server-path (format "%s/ruby/bin/solargraph" w-dotfiles-folder-path))
+                                  (add-to-list 'company-lsp-filter-candidates '(w-ruby-ls . nil))
+                                  (setq ruby-language-server-path (format "%s/ruby/bin/solargraph" w-dotfiles-folder-path))
 
-                                    (lsp-register-client
-                                     (make-lsp-client :new-connection (lsp-stdio-connection
-                                                                       (list ruby-language-server-path "stdio")
-                                                                       )
-                                                      :major-modes '(ruby-mode)
-                                                      :priority -1
-                                                      :server-id 'w-ruby-ls))
-                                    (if (get-buffer-process "*w-ruby-ls*")
-                                        (lsp)
-                                      )
-                                    ))
+                                  (lsp-register-client
+                                   (make-lsp-client :new-connection (lsp-stdio-connection
+                                                                     (list ruby-language-server-path "stdio")
+                                                                     )
+                                                    :major-modes '(ruby-mode)
+                                                    :priority -1
+                                                    :server-id 'w-ruby-ls))
+                                  (if (get-buffer-process "*w-ruby-ls*")
+                                      (lsp)
+                                    )
+                                  ))
 
       ;;Mapping for ruby mode
       (general-define-key
@@ -1451,6 +1454,8 @@
        :keymaps 'ruby-mode-map
        "s" '(:ignore t :which-key "start")
        "sl" '(lsp :which-key "start language server")
+       "sf" '(lsp-find-definition :which-key "find definition")
+       "ss" '(helm-imenu :which-key "display document structure")
        )
 
     #+END_SRC
