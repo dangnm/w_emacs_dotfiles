@@ -1466,6 +1466,7 @@
        :keymaps 'ruby-mode-map
        "s" '(:ignore t :which-key "start")
        "sl" '(lsp :which-key "start language server")
+       "sx" '(lsp-ui-flycheck-list--quit :which-key "stop language server")
        "sf" '(lsp-find-definition :which-key "find definition")
        "ss" '(helm-imenu :which-key "display document structure")
        )
