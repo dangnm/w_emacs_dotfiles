@@ -1441,12 +1441,16 @@
       (add-hook 'ruby-mode-hook (lambda ()
                                   (add-to-list 'company-lsp-filter-candidates '(w-ruby-ls . nil))
                                   (setq ruby-language-server-path (format "%s/ruby/bin/solargraph" w-dotfiles-folder-path))
+                                  (defun lsp-clients-ruby--make-init-options ()
+                                    "Init options for Ruby. (syntax checking enabled)"
+                                    '(:diagnostics t))
 
                                   (lsp-register-client
                                    (make-lsp-client :new-connection (lsp-stdio-connection
                                                                      (list ruby-language-server-path "stdio")
                                                                      )
                                                     :major-modes '(ruby-mode)
+                                                    :initialization-options #'lsp-clients-ruby--make-init-options
                                                     :priority -1
                                                     :server-id 'w-ruby-ls))
                                   (if (get-buffer-process "*w-ruby-ls*")
