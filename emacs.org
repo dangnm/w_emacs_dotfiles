@@ -1435,8 +1435,9 @@
 *** ruby language server protocol (solargraph) 
     - Robe mode may confict with solargraph
     - Dependencies: lsp-mode
-    - To make this config work, you must:
+    - To make this config work, you will need to:
     1. *Run* ~gem install solargraph~ in your ruby repo
+    2. *Run* ~gem install yard~ and ~yard config --gem-install-yri~ and ~yard gems~ in your ruby repo to access source code of gems
     #+BEGIN_SRC emacs-lisp
       (add-hook 'ruby-mode-hook (lambda ()
                                   (add-to-list 'company-lsp-filter-candidates '(w-ruby-ls . nil))
