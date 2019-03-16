@@ -717,7 +717,8 @@
 ** Setup editor config
    #+BEGIN_SRC emacs-lisp
      ;; welcome screen splash image
-     (setq fancy-splash-image (format "%s/logo.png" w-dotfiles-folder-path))
+     (setq w/fancy-splash-image-number (random 3))
+     (setq fancy-splash-image (format "%s/logo_%s.png" w-dotfiles-folder-path w/fancy-splash-image-number))
      ;;ensure environment variables inside Emacs look the same as in the user's shell
      (when (memq window-system '(mac ns x))
        (exec-path-from-shell-initialize))
