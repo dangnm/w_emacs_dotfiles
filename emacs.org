@@ -1219,6 +1219,32 @@
       "A" 'vc-annotate-toggle-annotation-visibility
       (kbd "RET") 'vc-annotate-goto-line)
 
+     (eval-after-load "vc-annotate"
+       '(progn
+          (setq
+           vc-annotate-background nil
+           vc-annotate-background-mode nil
+           vc-annotate-very-old-color nil
+           vc-annotate-color-map '((20 . (face-attribute 'default :foreground))
+                                   (40 . (face-attribute 'default :foreground))
+                                   (60 . (face-attribute 'default :foreground))
+                                   (80 . (face-attribute 'default :foreground))
+                                   (100 . (face-attribute 'default :foreground))
+                                   (120 . (face-attribute 'default :foreground))
+                                   (140 . (face-attribute 'default :foreground))
+                                   (160 . (face-attribute 'default :foreground))
+                                   (180 . (face-attribute 'default :foreground))
+                                   (200 . (face-attribute 'default :foreground))
+                                   (220 . (face-attribute 'default :foreground))
+                                   (240 . (face-attribute 'default :foreground))
+                                   (260 . (face-attribute 'default :foreground))
+                                   (280 . (face-attribute 'default :foreground))
+                                   (300 . (face-attribute 'default :foreground))
+                                   (320 . (face-attribute 'default :foreground))
+                                   (340 . (face-attribute 'default :foreground))
+                                   (360 . (face-attribute 'default :foreground))))
+          ))
+
      ;; Show only the author toggle
      (eval-after-load "vc-annotate"
        '(defun vc-annotate-get-time-set-line-props ()
