@@ -240,7 +240,6 @@
         "w=" 'balance-windows
         "wr" 'w/rotate-windows-forward
         "wR" 'w/rotate-windows-backward
-        "w/" 'split-window-right
         "w/" '((lambda () (interactive) (split-window-right) (other-window 1)) :which-key "split-window-right")
         "w-" 'split-window-below
         "wv" 'split-window-right
