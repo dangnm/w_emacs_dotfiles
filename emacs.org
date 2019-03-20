@@ -82,6 +82,16 @@
               (kill-new file-name))
           (error "Buffer not visiting a file"))))
 
+    (defun w/show-buffer-file-name-base ()
+      "Show current file name base in the minibuffer."
+      (interactive)
+      (let ((file-name (file-name-base(buffer-file-name))))
+        (if file-name
+            (progn
+              (message file-name)
+              (kill-new file-name))
+          (error "Buffer not visiting a file"))))
+
                                             ; Folding
     (defun toggle-selective-display (column)
       (interactive "P")
@@ -148,8 +158,11 @@
                                              ;File
         "f" '(:ignore t :which-key "Files")
         "ff" 'helm-find-files
-        "fy" 's/show-buffer-file-path
-        "fY" 's/show-buffer-file-name
+        "fy" '(:ignore t :which-key "yank path")
+        "fyY" 'w/projectile-copy-file-path
+        "fyy" 's/show-buffer-file-path
+        "fyn" 's/show-buffer-file-name
+        "fyN" 'w/show-buffer-file-name-base
         "ft" 'neotree-project-dir-toggle
         "fw" 'save-buffer
         "fx" 'evil-quit
@@ -855,6 +868,26 @@
        (persp-mode)
        (call-interactively 'w/persp-helm-mini)
        )
+
+     (defun w/projectile-file-path ()
+       "Retrieve the file path relative to project root.
+
+     Returns:
+       - A string containing the file path in case of success.
+       - `nil' in case the current buffer does not visit a file."
+       (when-let (file-name (buffer-file-name))
+         (file-relative-name (file-truename file-name) (projectile-project-root))))
+
+     (defun w/projectile-copy-file-path ()
+       "Copy and show the file path relative to project root."
+       (interactive)
+       (if-let (file-path (w/projectile-file-path))
+           (progn
+             (message file-path)
+             (kill-new file-path))
+         (message "WARNING: Current buffer is not visiting a file!")))
+
+
    #+END_SRC
 
 ** Neotree config
