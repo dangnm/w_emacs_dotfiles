@@ -92,6 +92,25 @@
               (kill-new file-name))
           (error "Buffer not visiting a file"))))
 
+    (defun w/file-path-with-line ()
+      "Retrieve the file path of the current buffer, including line number.
+
+    Returns:
+      - A string containing the file path in case of success.
+      - `nil' in case the current buffer does not have a directory."
+      (when-let (file-path (buffer-file-name))
+        (concat file-path ":" (number-to-string (line-number-at-pos)))))
+
+    (defun w/show-buffer-file-path-with-line ()
+      "Show current file name base in the minibuffer."
+      (interactive)
+      (let ((file-name (w/file-path-with-line)))
+        (if file-name
+            (progn
+              (message file-name)
+              (kill-new file-name))
+          (error "Buffer not visiting a file"))))
+
                                             ; Folding
     (defun toggle-selective-display (column)
       (interactive "P")
@@ -163,6 +182,8 @@
         "fyy" 's/show-buffer-file-path
         "fyn" 's/show-buffer-file-name
         "fyN" 'w/show-buffer-file-name-base
+        "fyl" 'w/show-buffer-file-path-with-line
+        "fyL" 'w/projectile-copy-file-path-with-line
         "ft" 'neotree-project-dir-toggle
         "fw" 'save-buffer
         "fx" 'evil-quit
@@ -248,6 +269,7 @@
         "r" '(:ignore t :which-key "registers")
         "rj" 'jump-to-register
         "rw" 'window-configuration-to-register
+        "rl" 'helm-resume
                                              ;Windows
         "w" '(:ignore t :which-key "windows")
         "w=" 'balance-windows
@@ -887,6 +909,23 @@
              (kill-new file-path))
          (message "WARNING: Current buffer is not visiting a file!")))
 
+     (defun w/projectile-file-path-with-line ()
+       "Retrieve the file path relative to project root, including line number.
+
+     Returns:
+       - A string containing the file path in case of success.
+       - `nil' in case the current buffer does not visit a file."
+       (when-let (file-path (w/projectile-file-path))
+         (concat file-path ":" (number-to-string (line-number-at-pos)))))
+
+     (defun w/projectile-copy-file-path-with-line ()
+       "Copy and show the file path relative to project root."
+       (interactive)
+       (if-let (file-path (w/projectile-file-path-with-line))
+           (progn
+             (message file-path)
+             (kill-new file-path))
+         (message "WARNING: Current buffer is not visiting a file!")))
 
    #+END_SRC
 
@@ -905,7 +944,8 @@
         (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
         (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
         (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-        (evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
+        (evil-define-key 'normal neotree-mode-map (kbd "gg") 'evil-goto-first-line)
+        (evil-define-key 'normal neotree-mode-map (kbd "r") 'neotree-refresh)
         (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-next-line)
         (evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
         (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
