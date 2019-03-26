@@ -853,6 +853,15 @@
 
        (add-hook 'helm-after-initialize-hook
                  (lambda()
+                   (require 'dash)
+                   (require 's)
+
+                   (add-hook 'ido-make-buffer-list-hook 'my/ido-stars-to-end)
+                   (defun my/ido-stars-to-end ()
+                     "Put \"*starred*\" buffers at the end of the ido candidates list."
+                     (ido-to-end (--filter (s-starts-with-p "*" it)
+                                           ido-temp-list)))
+
                    (define-key helm-map (kbd "C-u") 'helm-previous-page)
                    (define-key helm-map (kbd "C-d") 'helm-next-page)
                    (define-key helm-map (kbd "C-j") 'helm-next-line)
@@ -860,6 +869,9 @@
        )
 
 
+     (setq helm-mini-default-sources '(helm-source-buffers-list
+                                       helm-source-recentf
+                                       helm-source-buffer-not-found))
      (defun w/persp-helm-mini ()
        "As `helm-mini' but restricts visible buffers by perspective."
        (interactive)
