@@ -1608,6 +1608,7 @@
 *** ruby debugger (dap-mode)
     - To make this config work, you will need to:
     1. *Run* ~gem install ruby-debug-ide -v 0.6.1~ AND ~gem install debase~ in your ruby repo
+    2. *Run* ~brew install node~ to install node
     #+BEGIN_SRC emacs-lisp
       (setq dap-ruby-debug-program `("node" ,(expand-file-name (format "%s/ruby/debugger/rebornix.Ruby-0.22.3/extension/out/debugger/main.js" w-dotfiles-folder-path))))
       (use-package hydra
@@ -1628,9 +1629,9 @@
                                   ))
 
       (defun w/rbenv-rspec-path ()
-        (setq w/ruby-gemset-path (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "gem env home 2>/dev/null")))
+        (setq w/ruby-rspec-path (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "bundle exec ruby -e \"puts(Gem.bin_path('rspec-core', 'rspec', '>= 0.a'))\" 2>/dev/null")))
         (expand-file-name
-         (format "%s/bin/rspec" w/ruby-gemset-path)))
+         (format "%s" w/ruby-rspec-path)))
 
       (defun w/dap-ruby--populate-start-file-args (conf)
         "Populate CONF with the required arguments."
@@ -1650,6 +1651,7 @@
         (interactive)
         (let ((debug-args (list :type "Ruby"
 
+                                :debuggerPort 1235
                                 :cwd (projectile-project-root)
                                 :request "launch"
                                 :program (w/rbenv-rspec-path)
@@ -1666,6 +1668,7 @@
                   If there is no method under cursor it will fallback to test class."
         (interactive)
         (let ((debug-args (list :type "Ruby"
+                                :debuggerPort 1235
                                 :request "launch"
                                 :program (w/rbenv-rspec-path)
                                 :useBundler nil
