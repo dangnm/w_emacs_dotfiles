@@ -1624,15 +1624,15 @@
       (add-hook 'ruby-mode-hook (lambda ()
                                   (dap-mode 1)
                                   (dap-ui-mode 1)
-                                  (dap-register-debug-provider "Ruby" 'dap-ruby--populate-start-file-args)
+                                  (dap-register-debug-provider "Ruby" 'w/dap-ruby--populate-start-file-args)
                                   ))
 
-      (defun rbenv-rspec-path ()
+      (defun w/rbenv-rspec-path ()
         (setq w/ruby-gemset-path (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "gem env home 2>/dev/null")))
         (expand-file-name
          (format "%s/bin/rspec" w/ruby-gemset-path)))
 
-      (defun dap-ruby--populate-start-file-args (conf)
+      (defun w/dap-ruby--populate-start-file-args (conf)
         "Populate CONF with the required arguments."
         (-> conf
             (dap--put-if-absent :dap-server-path dap-ruby-debug-program)
@@ -1644,7 +1644,7 @@
 
 
       (setq w/ruby-rdebug-ide-path (format "%s/ruby/debugger/ruby-debug-ide-0.6.1/bin/rdebug-ide" w-dotfiles-folder-path))
-      (defun dap-ruby-run-test-at-point ()
+      (defun w/dap-ruby-run-test-at-point ()
         "Run test.
                   If there is no method under cursor it will fallback to test class."
         (interactive)
@@ -1652,7 +1652,7 @@
 
                                 :cwd (projectile-project-root)
                                 :request "launch"
-                                :program (rbenv-rspec-path)
+                                :program (w/rbenv-rspec-path)
                                 :useBundler nil
                                 :rdebugIdePath w/ruby-rdebug-ide-path
                                 :args `(,(w/file-path-with-line))
@@ -1661,17 +1661,32 @@
                                         (gethash dap--debug-providers)
                                         (funcall debug-args)))))
 
-      (defun dap-ruby-run-test ()
+      (defun w/dap-ruby-run-test ()
         "Run test.
                   If there is no method under cursor it will fallback to test class."
         (interactive)
         (let ((debug-args (list :type "Ruby"
                                 :request "launch"
-                                :program (rbenv-rspec-path)
+                                :program (w/rbenv-rspec-path)
                                 :useBundler nil
                                 :rdebugIdePath w/ruby-rdebug-ide-path
                                 :args `(,buffer-file-name)
                                 :name "Rspec File")))
+          (dap-start-debugging (-some-> (plist-get debug-args :type)
+                                        (gethash dap--debug-providers)
+                                        (funcall debug-args)))))
+      (defun w/dap-ruby-run-rails-s ()
+        "Run test.
+                  If there is no method under cursor it will fallback to test class."
+        (interactive)
+        (let ((debug-args (list :type "Ruby"
+                                :cwd (projectile-project-root)
+                                :request "launch"
+                                :program "bin/rails"
+                                :environment-variables '(("DISABLE_SPRING" . "true"))
+                                :rdebugIdePath w/ruby-rdebug-ide-path
+                                :args '("s")
+                                :name "Rails server")))
           (dap-start-debugging (-some-> (plist-get debug-args :type)
                                         (gethash dap--debug-providers)
                                         (funcall debug-args)))))
@@ -1681,11 +1696,13 @@
        :prefix w/secondary-leader-key
        :non-normal-prefix "M-n"
        :keymaps 'ruby-mode-map
+       "sS" '(:ignore t :which-key "server")
+       "sSr" 'w/dap-ruby-run-rails-s
        "td" '(:ignore t :which-key "test with debugger")
        "tdp" '(dap-breakpoint-toggle :which-key "Set breakpoint")
        "tdh" '(dap-hydra :which-key "Debug guide")
-       "tdt" '(dap-ruby-run-test-at-point :which-key "Run test at point")
-       "tdb" '(dap-ruby-run-test :which-key "Run all tests")
+       "tdt" '(w/dap-ruby-run-test-at-point :which-key "Run test at point")
+       "tdb" '(w/dap-ruby-run-test :which-key "Run all tests")
        "d" '(:ignore t :which-key "debugger tools")
        "dn" 'dap-next
        "di" 'dap-step-in
