@@ -1622,6 +1622,12 @@
         :defer t
         )
 
+      (general-define-key
+       :states '(normal visual insert emacs)
+       :keymaps 'dap-ui-breakpoints-ui-list-mode-map
+       "q" 'quit-window
+       )
+
       (add-hook 'ruby-mode-hook (lambda ()
                                   (dap-mode 1)
                                   (dap-ui-mode 1)
