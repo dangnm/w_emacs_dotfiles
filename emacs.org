@@ -1656,7 +1656,6 @@
                   If there is no method under cursor it will fallback to test class."
         (interactive)
         (let ((debug-args (list :type "Ruby"
-
                                 :debuggerPort 1235
                                 :cwd (projectile-project-root)
                                 :request "launch"
@@ -1696,6 +1695,27 @@
                                 :rdebugIdePath w/ruby-rdebug-ide-path
                                 :args '("s")
                                 :name "Rails server")))
+          (dap-start-debugging (-some-> (plist-get debug-args :type)
+                                        (gethash dap--debug-providers)
+                                        (funcall debug-args)))))
+
+      (defun w/rbenv-sidekiq-path ()
+        (setq w/ruby-sidekiq-path (replace-regexp-in-string  "\n\+$" "" (shell-command-to-string "bundle exec ruby -e \"puts(Gem.bin_path('sidekiq', 'sidekiq', '>= 0.a'))\" 2>/dev/null")))
+        (expand-file-name
+         (format "%s" w/ruby-sidekiq-path)))
+
+      (defun w/dap-ruby-run-sidekiq ()
+        "Run test.
+                  If there is no method under cursor it will fallback to test class."
+        (interactive)
+        (let ((debug-args (list :type "Ruby"
+                                :debuggerPort 1236
+                                :cwd (projectile-project-root)
+                                :request "launch"
+                                :program (w/rbenv-sidekiq-path)
+                                :environment-variables '(("DISABLE_SPRING" . "true"))
+                                :rdebugIdePath w/ruby-rdebug-ide-path
+                                :name "Sidekiq server")))
           (dap-start-debugging (-some-> (plist-get debug-args :type)
                                         (gethash dap--debug-providers)
                                         (funcall debug-args)))))
