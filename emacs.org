@@ -974,6 +974,29 @@
              (kill-new file-path))
          (message "WARNING: Current buffer is not visiting a file!")))
 
+
+     (defun w/projectile-find-file-path (input-file-name &optional input_dir_path non-recursive)
+       (let* ((project-root (projectile-ensure-project (projectile-project-root)))
+              (dir-path (if (and (not (null input_dir_path)) (string-prefix-p (projectile-ensure-project (projectile-project-root)) input_dir_path)) input_dir_path project-root))
+              )
+         (if (not non-recursive)
+             (let ((file (car (seq-filter (lambda (f)
+                                            (string= input-file-name (file-name-nondirectory f)))
+                                          (projectile-project-files dir-path)))))
+
+               (when file
+                 (expand-file-name file dir-path)
+                 )
+               )
+           (let* ((non-recursive-file-path (expand-file-name input-file-name dir-path))
+                  (file (car (seq-filter (lambda (f)
+                                           (string= non-recursive-file-path (expand-file-name f dir-path)))
+                                         (projectile-project-files dir-path)))))
+             (when file
+               (expand-file-name file dir-path)
+               )
+             )
+           )))
    #+END_SRC
 
 ** Neotree config
@@ -1986,6 +2009,51 @@
 
        (add-to-list 'magic-mode-alist (cons #'+javascript-jsx-file-p 'rjsx-mode)))
    #+END_SRC
+** js helpers
+   #+BEGIN_SRC emacs-lisp
+     (defun w/projectile-find-js-test-path (input-file-path)
+       (let* ((input-file-name-base (file-name-base (file-name-base input-file-path)))
+              (full-file-name (file-name-nondirectory input-file-path))
+              (current-dir (file-name-directory input-file-path))
+              (upper-dir (file-name-directory (directory-file-name current-dir)))
+              (js-file-name (if (string-suffix-p "spec.js" full-file-name) (format "%s.js" input-file-name-base)))
+              (jsx-file-name (if (string-suffix-p "spec.js" full-file-name) (format "%s.jsx" input-file-name-base)))
+              (test-file-name (if (not (string-suffix-p "spec.js" full-file-name)) (format "%s.spec.js" input-file-name-base)))
+              ) 
+         (if test-file-name
+             (w/projectile-find-file-path test-file-name current-dir)
+           (let (
+                 (js-file-path (w/projectile-find-file-path js-file-name upper-dir t))
+                 (jsx-file-path (w/projectile-find-file-path jsx-file-name upper-dir t)))
+             (if js-file-path js-file-path jsx-file-path)
+             )
+           )
+         )
+       )
+
+     (defun w/go-to-js-test-file ()
+       (interactive)
+       (let* ((current-file-path (buffer-file-name))
+              (js-test-file-path (w/projectile-find-js-test-path current-file-path))
+              ) 
+         (when js-test-file-path
+           (find-file js-test-file-path)
+           )
+         )
+       ) 
+
+     ;;Bindings for js/react mode
+     (general-define-key
+      :states '(normal visual insert emacs)
+      :prefix w/secondary-leader-key
+      :non-normal-prefix "M-n"
+      :keymaps 'js2-mode-map
+      "t" '(:ignore t :which-key "test")
+      "ts" '(w/go-to-js-test-file :which-key "Test file toggle")
+      )
+   #+END_SRC
+
+   #+RESULTS:
 
 ** Reason mode config
 *** reasonml lang server config
