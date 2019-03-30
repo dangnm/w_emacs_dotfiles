@@ -3,6 +3,9 @@
 #+BEGIN_QUOTE
 - [[#introduction][Introduction]]
 - [[#helpers][Helpers]]
+  - [[#basic-helpers][Basic helpers]]
+  - [[#file-path-helpers][File path helpers]]
+  - [[#text-edit-helpers][Text edit helpers]]
 - [[#my-general-configs][My general configs]]
   - [[#evil-config][Evil config]]
   - [[#which-key-config][Which key config]]
@@ -26,6 +29,7 @@
 - [[#my-ui-configs][My ui configs]]
   - [[#space-line-config][space line config]]
   - [[#indent-guide-config][indent guide config]]
+  - [[#spacemacs-windows-split-tools][spacemacs windows split tools]]
 - [[#other-tools-configs][Other tools configs]]
   - [[#language-server-protocol-lsp-mode][language server protocol (lsp-mode)]]
   - [[#workspacepersp-mode-config][workspace(PERSP MODE) config]]
@@ -42,114 +46,119 @@
   - Use "C-c '" inside lisp source to toggle edit config source code
   - Use "C-c C-b" to jump to the subtree header
 * Helpers
-  #+BEGIN_SRC emacs-lisp
-    (defun create-shell ()
-      "creates a shell with a given name"
-      (interactive);; "Prompt\n shell name:")
-      (let ((shell-name (read-string "shell name: " nil)))
-        (shell (concat "*" shell-name "*"))))
+** Basic helpers
+   #+BEGIN_SRC emacs-lisp
+     (defun create-shell ()
+       "creates a shell with a given name"
+       (interactive);; "Prompt\n shell name:")
+       (let ((shell-name (read-string "shell name: " nil)))
+         (shell (concat "*" shell-name "*"))))
 
-    (defun create-shell-with-name (name)
-      (shell (concat "*" name "*")))
+     (defun create-shell-with-name (name)
+       (shell (concat "*" name "*")))
+                                             ; Folding
+     (defun toggle-selective-display (column)
+       (interactive "P")
+       (set-selective-display
+        (or column
+            (unless selective-display
+              (1+ (current-column))))))
 
-    (defun s/show-buffer-file-path ()
-      "Show the full path to the current file in the minibuffer."
-      (interactive)
-      (let ((file-name (buffer-file-name)))
-        (if file-name
-            (progn
-              (message file-name)
-              (kill-new file-name))
-          (error "Buffer not visiting a file"))))
+   #+END_SRC
+** File path helpers
+   #+BEGIN_SRC emacs-lisp
+     (defun s/show-buffer-file-path ()
+       "Show the full path to the current file in the minibuffer."
+       (interactive)
+       (let ((file-name (buffer-file-name)))
+         (if file-name
+             (progn
+               (message file-name)
+               (kill-new file-name))
+           (error "Buffer not visiting a file"))))
 
-    (defun w/show-buffer-project-path ()
-      "Show the full path to the current project in the minibuffer."
-      (interactive)
-      (let ((project-path (projectile-project-root)))
-        (if project-path
-            (progn
-              (message project-path)
-              (kill-new project-path))
-          (error "Buffer not visiting a project"))))
+     (defun w/show-buffer-project-path ()
+       "Show the full path to the current project in the minibuffer."
+       (interactive)
+       (let ((project-path (projectile-project-root)))
+         (if project-path
+             (progn
+               (message project-path)
+               (kill-new project-path))
+           (error "Buffer not visiting a project"))))
 
-    (defun s/show-buffer-file-name ()
-      "Show the full path to the current file in the minibuffer."
-      (interactive)
-      (let ((file-name (file-name-nondirectory(buffer-file-name))))
-        (if file-name
-            (progn
-              (message file-name)
-              (kill-new file-name))
-          (error "Buffer not visiting a file"))))
+     (defun s/show-buffer-file-name ()
+       "Show the full path to the current file in the minibuffer."
+       (interactive)
+       (let ((file-name (file-name-nondirectory(buffer-file-name))))
+         (if file-name
+             (progn
+               (message file-name)
+               (kill-new file-name))
+           (error "Buffer not visiting a file"))))
 
-    (defun w/show-buffer-file-name-base ()
-      "Show current file name base in the minibuffer."
-      (interactive)
-      (let ((file-name (file-name-base(buffer-file-name))))
-        (if file-name
-            (progn
-              (message file-name)
-              (kill-new file-name))
-          (error "Buffer not visiting a file"))))
+     (defun w/show-buffer-file-name-base ()
+       "Show current file name base in the minibuffer."
+       (interactive)
+       (let ((file-name (file-name-base(buffer-file-name))))
+         (if file-name
+             (progn
+               (message file-name)
+               (kill-new file-name))
+           (error "Buffer not visiting a file"))))
 
-    (defun w/file-path-with-line ()
-      "Retrieve the file path of the current buffer, including line number.
+     (defun w/file-path-with-line ()
+       "Retrieve the file path of the current buffer, including line number.
 
-    Returns:
-      - A string containing the file path in case of success.
-      - `nil' in case the current buffer does not have a directory."
-      (when-let (file-path (buffer-file-name))
-        (concat file-path ":" (number-to-string (line-number-at-pos)))))
+     Returns:
+       - A string containing the file path in case of success.
+       - `nil' in case the current buffer does not have a directory."
+       (when-let (file-path (buffer-file-name))
+         (concat file-path ":" (number-to-string (line-number-at-pos)))))
 
-    (defun w/show-buffer-file-path-with-line ()
-      "Show current file name base in the minibuffer."
-      (interactive)
-      (let ((file-name (w/file-path-with-line)))
-        (if file-name
-            (progn
-              (message file-name)
-              (kill-new file-name))
-          (error "Buffer not visiting a file"))))
+     (defun w/show-buffer-file-path-with-line ()
+       "Show current file name base in the minibuffer."
+       (interactive)
+       (let ((file-name (w/file-path-with-line)))
+         (if file-name
+             (progn
+               (message file-name)
+               (kill-new file-name))
+           (error "Buffer not visiting a file"))))
+   #+END_SRC
+** Text edit helpers
+   #+BEGIN_SRC emacs-lisp
+     (defun toggle-camelcase-underscores ()
+       "Toggle between camelcase and underscore notation for the symbol at point."
+       (interactive)
+       (save-excursion
+         (let* ((bounds (bounds-of-thing-at-point 'symbol))
+                (start (car bounds))
+                (end (cdr bounds))
+                (currently-using-underscores-p (progn (goto-char start)
+                                                      (re-search-forward "_" end t))))
+           (if currently-using-underscores-p
+               (progn
+                 (upcase-initials-region start end)
+                 (replace-string "_" "" nil start end)
+                 (downcase-region start (1+ start)))
+             (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
+             (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
 
-                                            ; Folding
-    (defun toggle-selective-display (column)
-      (interactive "P")
-      (set-selective-display
-       (or column
-           (unless selective-display
-             (1+ (current-column))))))
-
-    (defun toggle-camelcase-underscores ()
-      "Toggle between camelcase and underscore notation for the symbol at point."
-      (interactive)
-      (save-excursion
-        (let* ((bounds (bounds-of-thing-at-point 'symbol))
-               (start (car bounds))
-               (end (cdr bounds))
-               (currently-using-underscores-p (progn (goto-char start)
-                                                     (re-search-forward "_" end t))))
-          (if currently-using-underscores-p
-              (progn
-                (upcase-initials-region start end)
-                (replace-string "_" "" nil start end)
-                (downcase-region start (1+ start)))
-            (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
-            (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
-
-    (defun toggle-camelcase-motion ()
-      (interactive)
-      (if (get 'camelcase-motion-toggle-flag 'state)
-          (progn
-            (message "Disabled camelcase motion")
-            (subword-mode'-1)
-            (put 'camelcase-motion-toggle-flag'state nil))
-        (progn
-          (message "Enabled camelcase motion")
-          (subword-mode)
-          (put 'camelcase-motion-toggle-flag 'state t))
-        )
-      )
-  #+END_SRC
+     (defun toggle-camelcase-motion ()
+       (interactive)
+       (if (get 'camelcase-motion-toggle-flag 'state)
+           (progn
+             (message "Disabled camelcase motion")
+             (subword-mode'-1)
+             (put 'camelcase-motion-toggle-flag'state nil))
+         (progn
+           (message "Enabled camelcase motion")
+           (subword-mode)
+           (put 'camelcase-motion-toggle-flag 'state t))
+         )
+       )
+   #+END_SRC
 * My general configs
 ** Evil config
    #+BEGIN_SRC emacs-lisp
@@ -185,8 +194,9 @@
         "fyl" 'w/show-buffer-file-path-with-line
         "fyL" 'w/projectile-copy-file-path-with-line
         "ft" 'neotree-project-dir-toggle
-        "fw" 'save-buffer
+        "fs" 'save-buffer
         "fx" 'evil-quit
+        "fq" 'evil-quit-all
         "fe" '(:ignore t :which-key "emacs")
         "fes" 'sync-config
                                              ;Projects
@@ -222,6 +232,9 @@
                                              ;Buffer
         "b" '(:ignore t :which-key "buffers")
         "bb" 'w/helm-mini
+        "bn" 'next-buffer
+        "bp" 'previous-buffer
+        "bd" 'kill-this-buffer
         "bR" 'evil-edit
                                              ;Zoom(Folding)
         "z" '(:ignore t :which-key "zoom")
@@ -249,6 +262,7 @@
         "gll" 'git-link
                                              ;Jump
         "j" '(:ignore t :which-key "jump")
+        "jd" 'magit-dired-jump
         "jj" 'evil-avy-goto-char
         "jJ" 'evil-avy-goto-char-2
         "jl" 'evil-avy-goto-line
@@ -581,6 +595,7 @@
      (setq vterm-path (format "%s/packages/emacs-libvterm" w-dotfiles-folder-path))
      (use-package vterm
        :load-path vterm-path
+       :commands (vterm)
        :config
        (setq vterm-keymap-exceptions nil)
        (defvar bash-shortcuts '("C-e"
@@ -626,7 +641,9 @@
 
      (setq multi-libvterm-path (format "%s/packages/multi-libvterm.el" w-dotfiles-folder-path))
      (use-package multi-libvterm
-       :load-path multi-libvterm-path)
+       :load-path multi-libvterm-path
+       :commands (multi-libvterm)
+       )
 
      (general-define-key
       :states '(normal visual insert emacs)
@@ -742,12 +759,30 @@
       )
   #+END_SRC
 ** Setup theme config
+*** Default theme config
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'load-path (format "%s/themes" w-dotfiles-folder-path))
      (add-to-list 'custom-theme-load-path (format "%s/themes" w-dotfiles-folder-path))
-     ;(load-theme 'monokai t)
+                                             ;(load-theme 'monokai t)
      (load-theme 'gruvbox-dark-medium t)
-   #+END_SRC
+     #+END_SRC
+*** Theme switcher
+    #+BEGIN_SRC emacs-lisp
+      (use-package helm-themes
+        :ensure t
+        :defer t
+        :commands (helm-themes)
+        )
+
+      (general-define-key
+       :states '(normal visual insert emacs)
+       :prefix w/main-leader-key
+       :keymaps 'override
+       :non-normal-prefix "M-m"
+       "T" '(:ignore t :which-key "themes")
+       "Ts" 'helm-themes
+       )
+    #+END_SRC
 ** Setup editor config
    #+BEGIN_SRC emacs-lisp
      ;; welcome screen splash image
@@ -1396,6 +1431,138 @@
 
    #+END_SRC
 
+** spacemacs windows split tools
+   #+BEGIN_SRC emacs-lisp
+     (defvar spacemacs-window-split-ignore-prefixes nil)
+
+     (defun spacemacs--window-split-splittable-windows ()
+       (seq-remove
+        (lambda (window)
+          ;; TODO: find a way to identify unsplittable side windows reliably!
+          nil)
+        (spacemacs--window-split-non-ignored-windows)))
+
+     (defun spacemacs--window-split-non-ignored-windows ()
+       "Determines the list of windows to be deleted."
+       (seq-filter
+        (lambda (window)
+          (let* ((name (buffer-name (window-buffer window)))
+                 (prefixes-matching
+                  (seq-filter
+                   (lambda (prefix) (string-prefix-p prefix name))
+                   spacemacs-window-split-ignore-prefixes)))
+            (not prefixes-matching)))
+        (window-list (selected-frame))))
+
+
+     (defun spacemacs/window-split-default-delete ()
+       "Deletes other windows, except a list of excluded ones."
+       (if spacemacs-window-split-ignore-prefixes
+           (let* ((deletable (spacemacs--window-split-non-ignored-windows))
+                  (splittable (spacemacs--window-split-splittable-windows)))
+             (when splittable
+               (let* ((selected (car splittable))
+                      (to-delete (delq selected deletable)))
+                 (select-window selected)
+                 (dolist (window to-delete) (delete-window window)))))
+         (delete-other-windows)))
+
+     (defvar spacemacs-window-split-delete-function 'spacemacs/window-split-default-delete)
+
+     (defun spacemacs/window-split-single-column (&optional purge)
+       "Set the layout to single column.
+
+     Uses the funcion defined in `spacemacs-window-split-delete-function' as a means to
+     remove windows.
+
+     When called with a prefix argument, it uses `delete-other-windows' as a means
+     to remove windows, regardless of the value in `spacemacs-window-split-delete-function'."
+       (interactive "P")
+       (if purge
+           (let ((ignore-window-parameters t))
+             (delete-other-windows))
+         (funcall spacemacs-window-split-delete-function))
+       (balance-windows))
+
+     (defun spacemacs/window-split-double-columns (&optional purge)
+       "Set the layout to double columns.
+
+     Uses the funcion defined in `spacemacs-window-split-delete-function' as a means to
+     remove windows.
+
+     When called with a prefix argument, it uses `delete-other-windows' as a means
+     to remove windows, regardless of the value in `spacemacs-window-split-delete-function'."
+       (interactive "P")
+       (if purge
+           (let ((ignore-window-parameters t))
+             (delete-other-windows))
+         (funcall spacemacs-window-split-delete-function))
+       (if (spacemacs--window-split-splittable-windows)
+           (let* ((previous-files (seq-filter #'buffer-file-name
+                                              (delq (current-buffer) (buffer-list)))))
+             (set-window-buffer (split-window-right) (or (car previous-files) "*scratch*"))
+             (balance-windows))
+         (message "There are no main windows available to split!")))
+
+     (defun spacemacs/window-split-triple-columns (&optional purge)
+       "Set the layout to triple columns.
+
+     Uses the funcion defined in `spacemacs-window-split-delete-function' as a means to
+     remove windows.
+
+     When called with a prefix argument, it uses `delete-other-windows' as a means
+     to remove windows, regardless of the value in `spacemacs-window-split-delete-function'."
+       (interactive "P")
+       (if purge
+           (let ((ignore-window-parameters t))
+             (delete-other-windows))
+         (funcall spacemacs-window-split-delete-function))
+       (if (spacemacs--window-split-splittable-windows)
+           (let* ((previous-files (seq-filter #'buffer-file-name
+                                              (delq (current-buffer) (buffer-list))))
+                  (second (split-window-right))
+                  (third (split-window second nil 'right)))
+             (set-window-buffer second (or (car previous-files) "*scratch*"))
+             (set-window-buffer third (or (cadr previous-files) "*scratch*"))
+             (balance-windows))
+         (message "There are no main windows available to split!")))
+
+     (defun spacemacs/window-split-grid (&optional purge)
+       "Set the layout to a 2x2 grid.
+
+     Uses the funcion defined in `spacemacs-window-split-delete-function' as a means to
+     remove windows.
+
+     When called with a prefix argument, it uses `delete-other-windows' as a means
+     to remove windows, regardless of the value in `spacemacs-window-split-delete-function'."
+       (interactive "P")
+       (if purge
+           (let ((ignore-window-parameters t))
+             (delete-other-windows))
+         (funcall spacemacs-window-split-delete-function))
+       (if (spacemacs--window-split-splittable-windows)
+           (let* ((previous-files (seq-filter #'buffer-file-name
+                                              (delq (current-buffer) (buffer-list))))
+                  (second (split-window-below))
+                  (third (split-window-right))
+                  (fourth (split-window second nil 'right)))
+             (set-window-buffer third (or (car previous-files) "*scratch*"))
+             (set-window-buffer second (or (cadr previous-files) "*scratch*"))
+             (set-window-buffer fourth (or (caddr previous-files) "*scratch*"))
+             (balance-windows))
+         (message "There are no main windows available to split!")))
+
+     (general-define-key
+      :states '(normal visual insert emacs)
+      :prefix w/main-leader-key
+      :keymaps 'override
+      :non-normal-prefix "M-m"
+      "w1" 'spacemacs/window-split-single-column
+      "w2" 'spacemacs/window-split-double-columns
+      "w3" 'spacemacs/window-split-triple-columns
+      "w4" 'spacemacs/window-split-grid
+      )
+   #+END_SRC
 * Other tools configs
 ** language server protocol (lsp-mode)
    - LSP is what makes Emacs full featured IDE (code navigation & completion)
