@@ -1689,6 +1689,57 @@
              persp-autokill-buffer-on-remove 'kill-weak
              persp-save-dir (expand-file-name "~/.emacs.d/.cache/layouts/"))
        )
+
+     (defun w/persp-layout ()
+       "Switch to perspective of position POS."
+       (interactive)
+       (let* ((persp-current-name (safe-persp-name (get-current-persp)))
+              (highlight-persps (lambda (elt idx)
+                                  (format (if (string= elt persp-current-name) "%d *%s*" "%d %s")
+                                          (+ idx 1)
+                                          (if (string= elt "none") elt (f-base elt))))))
+         (string-join (seq-map-indexed highlight-persps (persp-names-current-frame-fast-ordered)) " | ")))
+
+
+     (defun w/persp-switch-to-number(number)
+       (persp-switch (nth (1+ (- number 2)) (persp-names-current-frame-fast-ordered)))
+       )
+
+     (use-package hydra
+       :ensure t
+       :defer t
+       )
+
+     (defhydra w/persp-hydra
+       (:color pink :hint nil :exit t)
+       "Layout: %s(w/persp-layout)"
+       ("n" persp-next "Next Layout" :column "Go to")
+       ("p" persp-prev "Prev Layout")
+       ("l" persp-switch "Switch Layout")
+       ("1" (w/persp-switch-to-number 1))
+       ("2" (w/persp-switch-to-number 2))
+       ("3" (w/persp-switch-to-number 3))
+       ("4" (w/persp-switch-to-number 4))
+       ("5" (w/persp-switch-to-number 5))
+       ("6" (w/persp-switch-to-number 6))
+       ("7" (w/persp-switch-to-number 7))
+       ("8" (w/persp-switch-to-number 8))
+       ("9" (w/persp-switch-to-number 9))
+
+       ("d" persp-kill :column "Actions")
+       ("r" persp-rename)
+       ("s" persp-save-state-to-file "Save Layout")
+       ("L" persp-load-state-from-file "Load Layout")
+       ("q" nil "cancel" :color blue :column nil))
+
+     (general-define-key
+      :states '(normal visual insert emacs)
+      :prefix w/main-leader-key
+      :keymaps 'override
+      :non-normal-prefix "M-m"
+      "lh" '(w/persp-hydra/body :which-key "Persp select")
+      )
+
    #+END_SRC
 ** org mode config
    #+BEGIN_SRC emacs-lisp
