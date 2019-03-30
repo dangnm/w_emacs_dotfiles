@@ -1499,7 +1499,7 @@
          (funcall spacemacs-window-split-delete-function))
        (if (spacemacs--window-split-splittable-windows)
            (let* ((previous-files (seq-filter #'buffer-file-name
-                                              (delq (current-buffer) (buffer-list)))))
+                                              (delq (current-buffer) (with-persp-buffer-list () (buffer-list))))))
              (set-window-buffer (split-window-right) (or (car previous-files) "*scratch*"))
              (balance-windows))
          (message "There are no main windows available to split!")))
@@ -1519,7 +1519,7 @@
          (funcall spacemacs-window-split-delete-function))
        (if (spacemacs--window-split-splittable-windows)
            (let* ((previous-files (seq-filter #'buffer-file-name
-                                              (delq (current-buffer) (buffer-list))))
+                                              (delq (current-buffer) (with-persp-buffer-list () (buffer-list)))))
                   (second (split-window-right))
                   (third (split-window second nil 'right)))
              (set-window-buffer second (or (car previous-files) "*scratch*"))
@@ -1542,7 +1542,7 @@
          (funcall spacemacs-window-split-delete-function))
        (if (spacemacs--window-split-splittable-windows)
            (let* ((previous-files (seq-filter #'buffer-file-name
-                                              (delq (current-buffer) (buffer-list))))
+                                              (delq (current-buffer) (with-persp-buffer-list () (buffer-list)))))
                   (second (split-window-below))
                   (third (split-window-right))
                   (fourth (split-window second nil 'right)))
