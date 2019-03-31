@@ -28,6 +28,7 @@
   - [[#annotategit-blame][Annotate(Git blame)]]
 - [[#my-ui-configs][My ui configs]]
   - [[#space-line-config][space line config]]
+  - [[#line-number-config][line number config]]
   - [[#indent-guide-config][indent guide config]]
   - [[#spacemacs-windows-split-tools][spacemacs windows split tools]]
 - [[#other-tools-configs][Other tools configs]]
@@ -36,6 +37,7 @@
   - [[#org-mode-config][org mode config]]
   - [[#ruby-mode-config][ruby mode config]]
   - [[#js-config][js config]]
+  - [[#js-helpers][js helpers]]
   - [[#reason-mode-config][Reason mode config]]
 #+END_QUOTE
 
@@ -222,7 +224,7 @@
         "tn" 'display-line-numbers-mode
         "ti" 'indent-guide-toggle
         "ts" 'flycheck-toggle
-        "tn" 'global-display-line-numbers-mode
+        "tn" 'global-nlinum-mode
         "tl" 'toggle-truncate-lines
         "tM" '(evil-mc-moe ':which-key "multi cursors(g r)")
 
@@ -801,7 +803,6 @@
      (menu-bar-mode -1) 
      ;; hide toolbar in emacs GUI
      (tool-bar-mode -1) 
-     (global-display-line-numbers-mode)
      (defun w/setup-font-and-window ()
        (progn
          ;;Font size 16pt
@@ -1265,9 +1266,9 @@
 * My git tools config
 ** Magit config
    #+BEGIN_SRC emacs-lisp
-     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      ;; Magit - GIT tools
-     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      (use-package magit
        :commands (magit-blame-mode magit-blame)
        :config
@@ -1311,16 +1312,20 @@
        (evil-define-key 'normal git-timemachine-mode-map (kbd "G") 'git-timemachine-go-to-revision-id)
        )
 
-     (use-package git-gutter
-       :commands (global-git-gutter-mode git-gutter-mode)
+                                             ;indicating inserted, modified or deleted lines
+     (use-package diff-hl
+       :ensure t
+       :commands (diff-hl-mode)
        :config
-       (progn
-         (set-face-background 'git-gutter:deleted "#990A1B")
-         (set-face-foreground 'git-gutter:modified "#00736F")
-         (set-face-foreground 'git-gutter:added "#546E00"))
+       (diff-hl-margin-mode)
+       (setq diff-hl-margin-side 'right)
        )
-                                             ;Init git gutter when saving
-     (add-hook 'after-save-hook 'git-gutter-mode)
+                                             ;Init git modified highlighting at programming mode
+     (add-hook 'prog-mode-hook
+               (lambda()
+                 (diff-hl-mode t)
+                 )
+               )
 
      (eval-after-load 'git-timemachine
        '(progn
@@ -1418,6 +1423,54 @@
          )
        )
      (add-hook 'after-init-hook 'w/spaceline-setup)
+   #+END_SRC
+
+** line number config
+   #+BEGIN_SRC emacs-lisp
+     (use-package nlinum
+       :ensure t
+       :commands (nlinum-mode)
+       :config
+       (require 'nlinum-hl)
+       (setq nlinum-format "%d")
+       (setq nlinum-relative-redisplay-delay .2)
+       (setq nlinum-relative-offset 0)
+       ;; A shotgun approach that refreshes line numbers on a regular basis:
+       ;; Runs occasionally, though unpredictably
+       (add-hook 'post-gc-hook #'nlinum-hl-flush-all-windows)
+
+       ;; whenever Emacs loses/gains focus
+       (add-hook 'focus-in-hook  #'nlinum-hl-flush-all-windows)
+       (add-hook 'focus-out-hook #'nlinum-hl-flush-all-windows)
+       ;; ...or switches windows
+       (advice-add #'select-window :before #'nlinum-hl-do-select-window-flush)
+       (advice-add #'select-window :after  #'nlinum-hl-do-select-window-flush)
+
+       ;; after X amount of idle time
+       (run-with-idle-timer 5 t #'nlinum-hl-flush-window)
+       (run-with-idle-timer 30 t #'nlinum-hl-flush-all-windows)
+       )
+
+     (use-package nlinum-hl
+       :ensure t
+       )
+
+     (use-package nlinum-relative
+       :ensure t
+       :commands (nlinum-relative-toggle nlinum-relative-on)
+       :init
+       (nlinum-relative-setup-evil)
+       )
+
+     (add-hook 'after-init-hook (lambda ()
+                                 (global-nlinum-mode t)
+                                 (nlinum-relative-on)
+                                 ))
+
+     (add-hook 'org-mode-hook (lambda ()
+                                (interactive)
+                                (nlinum-mode -1)
+                                ))
    #+END_SRC
 
 ** indent guide config
