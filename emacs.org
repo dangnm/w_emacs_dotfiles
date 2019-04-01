@@ -278,9 +278,7 @@
         "ep" 'previous-error
         "ec" 'flycheck-clear
                                              ;Layouts
-        "l" '(:ignore t :which-key "layouts")
-        "lL" 'w/persp-load-state-from-file
-        "ls" 'w/persp-save-state-to-file
+        "l" '(w/persp-hydra/body :which-key "Persp select")
                                              ;Regiters
         "r" '(:ignore t :which-key "registers")
         "rj" 'jump-to-register
@@ -1781,17 +1779,9 @@
 
        ("d" persp-kill :column "Actions")
        ("r" persp-rename)
-       ("s" persp-save-state-to-file "Save Layout")
-       ("L" persp-load-state-from-file "Load Layout")
+       ("s" w/persp-save-state-to-file "Save Layout")
+       ("L" w/persp-load-state-from-file "Load Layout")
        ("q" nil "cancel" :color blue :column nil))
-
-     (general-define-key
-      :states '(normal visual insert emacs)
-      :prefix w/main-leader-key
-      :keymaps 'override
-      :non-normal-prefix "M-m"
-      "lh" '(w/persp-hydra/body :which-key "Persp select")
-      )
 
    #+END_SRC
 ** org mode config
