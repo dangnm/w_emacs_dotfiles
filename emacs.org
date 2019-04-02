@@ -890,11 +890,21 @@
                    (require 'dash)
                    (require 's)
 
-                   (add-hook 'ido-make-buffer-list-hook 'my/ido-stars-to-end)
-                   (defun my/ido-stars-to-end ()
-                     "Put \"*starred*\" buffers at the end of the ido candidates list."
-                     (ido-to-end (--filter (s-starts-with-p "*" it)
-                                           ido-temp-list)))
+                   (add-hook 'ido-make-buffer-list-hook 'w/ido-sort-on-stars-to-end)
+                   (defun w/ido-sort-on-stars-to-end ()
+                     (message ido-current-directory)
+                     (setq ido-temp-list
+                           (sort ido-temp-list
+                                 (lambda (a b)
+                                   (if (not (or (char-equal (string-to-char a) ?*) (char-equal (string-to-char b) ?*)))
+                                       (time-less-p
+                                        (sixth (file-attributes (concat ido-current-directory a)))
+                                        (sixth (file-attributes (concat ido-current-directory b))))
+                                     nil))))
+                     (ido-to-end
+                      (delq nil (mapcar
+                                 (lambda (x) (and (string-match-p "^\\.." x) x))
+                                 ido-temp-list))))
 
                    (define-key helm-map (kbd "C-u") 'helm-previous-page)
                    (define-key helm-map (kbd "C-d") 'helm-next-page)
