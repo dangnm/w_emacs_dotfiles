@@ -254,7 +254,7 @@
         "gb" 'magit-blame
         "gB" 'vc-annotate
         "gm" 'magit-dispatch
-        "gt" 'git-timemachine
+        "gt" 'w/git-timemachine-on
         "gs" 'magit-status
         "gy" 'w/git-last-commit-message
         "gf" '(:ignore t :which-key "file")
@@ -1293,6 +1293,11 @@
        (define-key magit-mode-map "\M-k" 'magit-section-backward-sibling)
        )
 
+     (use-package hydra
+       :ensure t
+       :defer t
+       )
+
      (use-package git-timemachine
        :commands (git-timemachine)
        :config
@@ -1320,6 +1325,25 @@
        (evil-define-key 'normal git-timemachine-mode-map (kbd "G") 'git-timemachine-go-to-revision-id)
        )
 
+     (defun w/git-timemachine-on ()
+       (interactive)
+       (git-timemachine)
+       (w/git-timemachine-hydra/body))
+
+
+     (defhydra w/git-timemachine-hydra
+       (:color pink :hint nil :exit t)
+       ("n" git-timemachine-show-next-revision "Next Revision" :column "Go to")
+       ("p" git-timemachine-show-previous-revision "Next Revision")
+       ("c" git-timemachine-show-current-revision "Current Revision")
+       ("g" git-timemachine-show-nth-revision "Nth Revision")
+       ("t" git-timemachine-show-revision-fuzzy "Search")
+       ("W" git-timemachine-kill-revision "Copy full revision" :column "Actions")
+       ("w" git-timemachine-kill-abbreviated-revision "Copy abbreviated revision" :column "Actions")
+       ("C" git-timemachine-show-commit "Show commit")
+       ("b" git-timemachine-blame "Blame")
+       ("G" git-timemachine-go-to-revision-id "Revision Id")
+       ("q" git-timemachine-quit "cancel" :color blue :column nil))
                                              ;indicating inserted, modified or deleted lines
      (use-package diff-hl
        :ensure t
