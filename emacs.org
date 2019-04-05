@@ -226,7 +226,7 @@
         "ts" 'flycheck-toggle
         "tn" 'global-nlinum-mode
         "tl" 'toggle-truncate-lines
-        "tM" '(evil-mc-moe ':which-key "multi cursors(g r)")
+        "tM" '(evil-mc-mode :which-key "multi cursors(g r)")
 
         "t C-c" 'toggle-camelcase-motion
         "th" '(:ignore t :which-key "highlight")
@@ -1920,6 +1920,8 @@
        :states '(normal visual insert emacs)
        :keymaps 'dap-ui-breakpoints-ui-list-mode-map
        "q" 'quit-window
+       "d" 'dap-ui-breakpoints-delete
+       "D" 'dap-ui-breakpoints-delete-selected
        )
 
       (add-hook 'ruby-mode-hook (lambda ()
