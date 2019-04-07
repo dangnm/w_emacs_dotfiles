@@ -23,6 +23,7 @@
   - [[#flycheck-config][Flycheck config]]
   - [[#auto-complete-config][Auto complete config]]
   - [[#multi-cursors-config][Multi cursors config]]
+  - [[#smart-backspace][Smart backspace]]
 - [[#my-git-tools-config][My git tools config]]
   - [[#magit-config][Magit config]]
   - [[#annotategit-blame][Annotate(Git blame)]]
@@ -1271,6 +1272,41 @@
        :config
        (global-evil-mc-mode +1))
    #+END_SRC
+** Smart backspace
+   #+BEGIN_SRC emacs-lisp
+     (defun smart-backspace (n &optional killflag)
+       "This function provides intellij like backspace.
+     Delete the backword-char usually and delete whitespace
+     to previous line indentation if it's start of line.
+     If a prefix argument is giben, delete the following N characters.
+     Optianal second arg KILLFLAG non-nil means to kill (save in killring)
+     instead of delete. Interactively, N is the prefix arg, and KILLFLAG
+     is set if N was explicitly specified."
+       (interactive "p\nP")
+       (let* ((current (point))
+              (beginning (save-excursion
+                           (beginning-of-line)
+                           (point))))
+         (if (string-match "^[ \t]*$" (buffer-substring beginning current))
+             (progn
+               (kill-line 0)
+               (delete-char (- n) killflag)
+               (indent-according-to-mode))
+           (delete-char (- n) killflag))))
+     (define-key evil-insert-state-map [?\C-?] 'smart-backspace)
+
+     (defun w/tab-to-tab-stop (&optional prev)
+       "Like `tab-to-tab-stop', but toggle direction with prefix."
+       (interactive "P")
+       (let ((nexttab (indent-next-tab-stop (current-column) prev)))
+         (delete-horizontal-space t)
+         (indent-to nexttab)))
+
+     (general-define-key
+      :states '(insert)
+      "<backtab>" '((lambda () (interactive) (w/tab-to-tab-stop t)) :which-key "tab-to-tab-stop-backward")
+      )
+   #+END_SRC
 * My git tools config
 ** Magit config
    #+BEGIN_SRC emacs-lisp
@@ -1343,7 +1379,7 @@
        ("C" git-timemachine-show-commit "Show commit")
        ("b" git-timemachine-blame "Blame")
        ("G" git-timemachine-go-to-revision-id "Revision Id")
-       ("q" git-timemachine-quit "cancel" :color blue :column nil))
+       ("q" nil "cancel" :color blue :column nil))
                                              ;indicating inserted, modified or deleted lines
      (use-package diff-hl
        :ensure t
