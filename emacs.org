@@ -1323,6 +1323,7 @@
        (require 'evil-magit)
                                              ;Full screen git status
        (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1)
+       (setq git-commit-summary-max-length 50)
        (define-key magit-mode-map "\C-j" 'magit-section-forward)
        (define-key magit-mode-map "\C-k" 'magit-section-backward)
        (define-key magit-mode-map "\M-j" 'magit-section-forward-sibling)
