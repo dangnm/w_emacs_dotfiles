@@ -5,6 +5,7 @@
     $ brew uninstall emacs
     # Install it with this command:
     $ brew cask install emacs
+    $ brew tap homebrew/cask-fonts  && brew cask install font-source-code-pro
 
 ## Run Emacs in terminal
     $ emacs -nw
